@@ -154,29 +154,8 @@ def log(repo, since, until, author, branch, include_diffs, unsave):
                 "deletions": report.deletions
             },
             "categories": report.categories,
-            "highlights": report.highlights,
-            "commits": []
+            "tasks": report.tasks if hasattr(report, 'tasks') and report.tasks else []
         }
-        
-        # Add commits with selective fields
-        for commit in commits:
-            commit_data = {
-                "hash": commit.short_hash,
-                "time": commit.date.strftime('%H:%M'),
-                "message": commit.message.split('\n')[0],  # First line only
-                "files": commit.files_changed,
-                "changes": f"+{commit.insertions}/-{commit.deletions}"
-            }
-            
-            # Add ticket refs if available
-            if commit.ticket_refs:
-                commit_data["tickets"] = commit.ticket_refs
-            
-            # Add diffs if requested
-            if include_diffs and commit.file_diffs:
-                commit_data["diffs"] = commit.file_diffs
-            
-            daily_log["commits"].append(commit_data)
         
         # Format JSON (always compact)
         json_output = json.dumps(daily_log, ensure_ascii=False, separators=(',', ':'))
@@ -207,10 +186,13 @@ def log(repo, since, until, author, branch, include_diffs, unsave):
         # Show summary
         click.echo(f"\n✨ Summary:")
         click.echo(f"   {report.ai_summary[:100]}...")
-        if report.highlights:
-            click.echo(f"\n🎯 Highlights:")
-            for highlight in report.highlights[:3]:
-                click.echo(f"   • {highlight}")
+        if report.tasks:
+            click.echo(f"\n📋 Tasks ({len(report.tasks)}):")
+            for task in report.tasks[:5]:
+                task_id = task.get('id', 'N/A')
+                task_title = task.get('title', 'Untitled')
+                task_category = task.get('category', 'Unknown')
+                click.echo(f"   • [{task_id}] {task_title} ({task_category})")
         
     except ValueError as e:
         click.echo(f"❌ Error: {e}", err=True)

@@ -69,8 +69,7 @@ class AIAnalyzer:
             "commits": commits,
             "ai_summary": "Auto-generated summary pending AI analysis.",
             "categories": {},
-            "highlights": [],
-            "timeline": []
+            "tasks": []
         }
 
         if not self.model or not commits:
@@ -110,7 +109,5 @@ class AIAnalyzer:
             report_data["ai_summary"] = ai_data["summary"]
         if "categories" in ai_data:
             report_data["categories"] = ai_data["categories"]
-        if "highlights" in ai_data:
-            report_data["highlights"] = ai_data["highlights"]
-        if "timeline" in ai_data:
-            report_data["timeline"] = ai_data["timeline"]
+        if "tasks" in ai_data:
+            report_data["tasks"] = ai_data["tasks"]

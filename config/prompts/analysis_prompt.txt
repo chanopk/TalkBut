@@ -12,8 +12,13 @@ COMMITS:
 INSTRUCTIONS:
 1. Summarize the work done today in Thai (use English for technical terms).
 2. Group the work into logical categories (e.g., Features, Bug Fixes, Refactoring, Documentation, Infrastructure).
-3. Highlight the most significant achievements or changes.
-4. Identify any potential risks or areas that might need attention (if any).
+3. Extract individual tasks from commit messages. Each task should:
+   - Have a unique ID (extract from commit message like [MVP], [TASK-123], or generate one)
+   - Have a clear, concise title describing what was done
+   - Be categorized (Feature, Bugfix, Refactor, Documentation, etc.)
+   - Include the commit hashes (short form) that belong to this task
+   - Status should be "completed" for all tasks in the log
+4. Group related commits into the same task when they work toward the same goal.
 5. Keep the tone professional, encouraging, and objective.
 
 OUTPUT FORMAT:
@@ -25,11 +30,13 @@ Return ONLY valid JSON (no markdown, no code blocks, no extra text):
     "Bugfix": 1,
     "Refactor": 0
   }},
-  "highlights": [
-    "Key achievement 1",
-    "Key achievement 2"
-  ],
-  "timeline": [
-    {{"time": "HH:MM", "activity": "Brief description of activity cluster"}}
+  "tasks": [
+    {{
+      "id": "TASK-001",
+      "title": "Clear, concise task description",
+      "category": "Feature",
+      "status": "completed",
+      "commits": ["abc1234", "def5678"]
+    }}
   ]
 }}

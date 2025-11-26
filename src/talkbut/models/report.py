@@ -14,8 +14,7 @@ class DailyReport:
     commits: List[Commit]  # Should be sorted chronologically
     ai_summary: str
     categories: Dict[str, int] = field(default_factory=dict)
-    highlights: List[str] = field(default_factory=list)
-    timeline: List[Dict[str, Any]] = field(default_factory=list)
+    tasks: List[Dict[str, Any]] = field(default_factory=list)
 
     def to_dict(self) -> dict:
         return {
@@ -27,8 +26,7 @@ class DailyReport:
             "commits": [c.to_dict() for c in self.commits],
             "ai_summary": self.ai_summary,
             "categories": self.categories,
-            "highlights": self.highlights,
-            "timeline": self.timeline,
+            "tasks": self.tasks,
         }
 
     def to_json(self) -> str:
