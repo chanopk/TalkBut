@@ -10,8 +10,36 @@ class ConfigManager:
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(ConfigManager, cls).__new__(cls)
+            cls._instance._load_env_file()
             cls._instance._load_config()
         return cls._instance
+
+    def _load_env_file(self) -> None:
+        """Load environment variables from .env file."""
+        env_path = Path(".env")
+        if env_path.exists():
+            try:
+                with open(env_path, "r", encoding="utf-8") as f:
+                    for line in f:
+                        line = line.strip()
+                        # Skip comments and empty lines
+                        if not line or line.startswith("#"):
+                            continue
+                        # Parse KEY=VALUE
+                        if "=" in line:
+                            key, value = line.split("=", 1)
+                            key = key.strip()
+                            value = value.strip()
+                            # Remove quotes if present
+                            if value.startswith('"') and value.endswith('"'):
+                                value = value[1:-1]
+                            elif value.startswith("'") and value.endswith("'"):
+                                value = value[1:-1]
+                            # Set environment variable if not already set
+                            if key and not os.getenv(key):
+                                os.environ[key] = value
+            except Exception as e:
+                print(f"Warning: Failed to load .env file: {e}")
 
     def _load_config(self) -> None:
         """Load configuration from file and environment variables."""
@@ -25,9 +53,11 @@ class ConfigManager:
             "ai": {
                 "provider": "gemini",
                 "api_key_env": "GEMINI_API_KEY",
-                "model": "gemini-2.0-flash",
+                "model": "gemini-2.0-flash-exp",
                 "temperature": 0.3,
-                "max_tokens": 2000,
+                "top_p": 0.95,
+                "top_k": 40,
+                "max_output_tokens": 8192,
             },
             "report": {
                 "default_format": "markdown",

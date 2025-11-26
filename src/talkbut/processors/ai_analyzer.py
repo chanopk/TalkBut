@@ -27,7 +27,16 @@ class AIAnalyzer:
 
         genai.configure(api_key=api_key)
         model_name = self.config.get("ai.model", "gemini-1.5-flash")
-        self.model = genai.GenerativeModel(model_name)
+        
+        # Generation config
+        self.generation_config = {
+            "temperature": self.config.get("ai.temperature", 0.3),
+            "top_p": self.config.get("ai.top_p", 0.95),
+            "top_k": self.config.get("ai.top_k", 40),
+            "max_output_tokens": self.config.get("ai.max_output_tokens", 8192),
+        }
+        
+        self.model = genai.GenerativeModel(model_name=model_name)
 
     def _load_prompt_template(self):
         prompt_path = Path("config/prompts/analysis_prompt.txt")
@@ -84,7 +93,10 @@ class AIAnalyzer:
                 commits_text=commits_text
             )
             
-            response = self.model.generate_content(prompt)
+            response = self.model.generate_content(
+                prompt,
+                generation_config=self.generation_config
+            )
             
             ai_text = response.text.strip()
             

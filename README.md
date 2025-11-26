@@ -1,64 +1,93 @@
 # TalkBut 🎯
 
-> เครื่องมือเก็บและวิเคราะห์ข้อมูลการทำงานจาก Git สำหรับ Software Developers
+> เครื่องมือสร้าง Daily Work Log จาก Git commits ด้วย AI
 
-TalkBut (ล้อเลียนเสียงคำว่า "ตอกบัตร") เป็น CLI tool ที่ช่วยให้คุณเก็บรวบรวมข้อมูลการทำงานจาก Git commits และใช้ AI ในการวิเคราะห์และสรุปผลงานประจำวัน ทำให้การเขียนรายงานสรุปงานเป็นเรื่องง่ายและรวดเร็ว
+TalkBut (ล้อเลียนเสียงคำว่า "ตอกบัตร") เป็น CLI tool ที่ช่วยสร้างรายงานสรุปงานประจำวันจาก Git commits โดยใช้ AI วิเคราะห์และสรุปผลงานให้อัตโนมัติ
 
 ## ✨ Features
 
-- ⚡ **Daily Log Generator** - สร้าง JSON log ในคำสั่งเดียว (collect + analyze)
-- 🤖 **AI Analysis** - วิเคราะห์และสรุปงานด้วย Google Gemini
-- � **Gาit Integration** - ดึงข้อมูล commits, changes, file diffs อัตโนมัติ
-- 📝 **รายงานหลากหลายรูปแบบ** - Markdown, JSON, Plain Text
-- 💾 **Local Storage** - เก็บข้อมูลปลอดภัยที่เครื่องของคุณ
+- ⚡ สร้าง daily log ในคำสั่งเดียว
+- 🤖 วิเคราะห์และสรุปงานด้วย Google Gemini AI
+- 📊 ดึงข้อมูลจาก Git commits อัตโนมัติ
+- 📝 Export เป็น JSON, Markdown, Plain Text
+- 💾 เก็บข้อมูลปลอดภัยที่เครื่องของคุณ
 
-## 🚀 Quick Start
+## 🚀 Installation
 
 ```bash
-# 1. Install
+# 1. Clone repository
+git clone <repository-url>
+cd talkbut
+
+# 2. Create environment file
+cp .env.example .env
+
+# 3. Setup virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+# 4. Install dependencies
+pip install -r requirements.txt
+npm install
+
+# 5. Install CLI
 pip install -e .
 
-# 2. ตั้งค่า API key
-export GEMINI_API_KEY="your-api-key-here"
+# 6. Set API key in .env
+echo "GEMINI_API_KEY=your-api-key-here" >> .env
+```
 
-# 3. สร้าง daily log (คำสั่งเดียวจบ! บันทึกอัตโนมัติ)
+## ⚡ Quick Start
+
+```bash
+# Activate environment
+source venv/bin/activate
+
+# Initialize config (first time)
+talkbut config init
+
+# Create daily log
 talkbut log
 ```
 
-## 📖 คำสั่งหลัก
+ผลลัพธ์จะถูกบันทึกที่ `data/logs/daily_log_YYYY-MM-DD.json`
 
-### `talkbut log` - สร้าง Daily Log (แนะนำ) ⭐
+## 📖 Usage
 
-คำสั่งหลักที่รวม collect + analyze ในคำสั่งเดียว สร้าง JSON log ที่กระชับ และบันทึกอัตโนมัติ
+### สร้าง Daily Log
 
 ```bash
-# พื้นฐาน - บันทึกอัตโนมัติที่ data/logs/daily_log_YYYY-MM-DD.json
+# สร้าง log วันนี้
 talkbut log
 
-# แสดงผลบนหน้าจอเท่านั้น ไม่บันทึกไฟล์
+# แสดงผลอย่างเดียว ไม่บันทึก
 talkbut log --unsave
 
-# รวม file diffs
-talkbut log --include-diffs
+# ไม่อ่าน diffs อ่านแค่  commits
+talkbut log --no-diffs
 ```
 
-📚 **[ดูคู่มือฉบับเต็ม →](docs/LOG_COMMAND.md)**
-
-### คำสั่งอื่นๆ
+### Export รายงาน
 
 ```bash
-# เก็บข้อมูลจาก Git
-talkbut collect --since "1 week ago"
-
-# วิเคราะห์ด้วย AI
-talkbut analyze --date today
-
-# สร้างรายงาน
+# Export เป็น Markdown
 talkbut report --format markdown --output report.md
 
-# จัดการ config
-talkbut config show
+# Export เป็น Plain Text
+talkbut report --format text --output report.txt
 ```
+
+### จัดการ Config
+
+```bash
+# แสดง config
+talkbut config show
+
+# ตรวจสอบ config
+talkbut config check
+```
+
+📚 **[ดูคู่มือเพิ่มเติม →](docs/LOG_COMMAND.md)**
 
 ## 📋 ตัวอย่าง Output
 
@@ -72,44 +101,17 @@ talkbut config show
     "insertions": 450,
     "deletions": 23
   },
-  "categories": {
-    "feature": 8,
-    "documentation": 3,
-    "refactor": 1
-  },
   "highlights": [
     "Complete CLI interface with Click framework",
     "AI analysis with Google Gemini API",
     "Multiple output formats support"
-  ],
-  "commits": [...]
+  ]
 }
 ```
 
-## 🛠️ Technology Stack
-
-- **Python 3.10+** - Core language
-- **Click** - CLI framework
-- **GitPython** - Git integration
-- **Google Gemini API** - AI analysis
-
-## 📚 เอกสารเพิ่มเติม
-
-- **[คู่มือคำสั่ง `talkbut log`](docs/LOG_COMMAND.md)** - คำสั่งหลักที่ใช้บ่อยที่สุด
-- [Architecture MVP](docs/architecture_mvp.md) - ระบบสถาปัตยกรรม
-- [Project Idea](idea.txt) - แนวคิดและวิสัยทัศน์
-
 ## 🔧 Configuration
 
-```bash
-# ตรวจสอบ config
-talkbut config check
-
-# สร้าง config file
-talkbut config init
-```
-
-Config file: `config/config.yaml`
+แก้ไข `config/config.yaml`:
 
 ```yaml
 git:
@@ -123,27 +125,25 @@ ai:
   model: gemini-2.0-flash-exp
 ```
 
-## 💡 Use Cases
+## 📦 Development
 
-- **Daily Standup** - สร้าง log สำหรับ standup meeting
-- **Personal Work Log** - เก็บบันทึกงานของตัวเอง
-- **Code Review** - สร้าง log พร้อม diffs สำหรับ review
-- **Weekly Summary** - สรุปงานประจำสัปดาห์
-- **Automated Backup** - ตั้ง cron job เก็บ log อัตโนมัติ
+```bash
+# Run tests
+pytest
 
-## 🎯 Roadmap
+# Format code
+black src/ tests/
 
-**MVP (Current)**
-- ✅ Git data collection
-- ✅ AI analysis with Gemini
-- ✅ Daily log generator
-- ✅ CLI interface
+# Lint
+ruff check src/ tests/
 
-**Next Phase**
-- [ ] Multiple repository support
-- [ ] Custom report templates
-- [ ] Integration with Jira/Linear
-- [ ] Web dashboard
+# Type check
+mypy src/
+```
+
+## 🛠️ Tech Stack
+
+Python 3.9+ • Click • GitPython • Google Gemini API
 
 ---
 
