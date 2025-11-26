@@ -61,7 +61,7 @@ def show_config():
         
         # Storage settings
         click.echo("💾 Storage Settings:")
-        click.echo(f"   Cache dir: {cfg.get('storage.cache_dir', './data/cache')}")
+        click.echo(f"   Log dir: ./data/logs/")
         click.echo("")
         
     except Exception as e:
@@ -162,13 +162,13 @@ def check_config():
             click.echo("✅ API key configured")
         
         # Check storage directories
-        cache_dir = Path(cfg.get('storage.cache_dir', './data/cache'))
-        if not cache_dir.exists():
-            click.echo(f"⚠️  Cache directory doesn't exist: {cache_dir}")
-            cache_dir.mkdir(parents=True, exist_ok=True)
-            click.echo(f"   Created: {cache_dir}")
+        log_dir = Path("./data/logs")
+        if not log_dir.exists():
+            click.echo(f"⚠️  Log directory doesn't exist: {log_dir}")
+            log_dir.mkdir(parents=True, exist_ok=True)
+            click.echo(f"   Created: {log_dir}")
         else:
-            click.echo(f"✅ Cache directory exists: {cache_dir}")
+            click.echo(f"✅ Log directory exists: {log_dir}")
         
         # Check git
         try:

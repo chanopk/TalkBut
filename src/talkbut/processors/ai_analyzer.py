@@ -8,7 +8,6 @@ from pathlib import Path
 from talkbut.models.commit import Commit
 from talkbut.models.report import DailyReport
 from talkbut.core.config import ConfigManager
-from talkbut.storage.cache import CacheManager
 from talkbut.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -16,7 +15,6 @@ logger = get_logger(__name__)
 class AIAnalyzer:
     def __init__(self):
         self.config = ConfigManager()
-        self.cache = CacheManager()
         self._setup_api()
         self._load_prompt_template()
 
@@ -78,19 +76,6 @@ class AIAnalyzer:
         if not self.model or not commits:
             return DailyReport(**report_data)
 
-        # Check cache first
-        cache_key = f"analysis_{report_date.isoformat()}_{total_commits}"
-        cached_response = self.cache.get_ai_response(cache_key)
-        
-        if cached_response:
-            try:
-                ai_data = json.loads(cached_response)
-                self._merge_ai_data(report_data, ai_data)
-                logger.info("Using cached AI analysis.")
-                return DailyReport(**report_data)
-            except json.JSONDecodeError:
-                pass
-
         # Call AI API
         try:
             prompt = self.prompt_template.format(
@@ -100,13 +85,15 @@ class AIAnalyzer:
                 commits_text=commits_text
             )
             
-            response = self.model.generate_content(
-                prompt,
-                generation_config={"response_mime_type": "application/json"}
-            )
+            response = self.model.generate_content(prompt)
             
-            ai_text = response.text
-            self.cache.save_ai_response(cache_key, ai_text)
+            ai_text = response.text.strip()
+            
+            # Remove markdown code blocks if present
+            if ai_text.startswith("```"):
+                lines = ai_text.split("\n")
+                ai_text = "\n".join(lines[1:-1]) if len(lines) > 2 else ai_text
+                ai_text = ai_text.replace("```json", "").replace("```", "").strip()
             
             ai_data = json.loads(ai_text)
             self._merge_ai_data(report_data, ai_data)

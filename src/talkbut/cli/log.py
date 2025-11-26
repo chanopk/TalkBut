@@ -41,31 +41,26 @@ logger = get_logger(__name__)
     help='Filter by branch (default: current branch)'
 )
 @click.option(
-    '--output', '-o',
-    type=click.Path(),
-    default=None,
-    help='Save daily log to file (default: print to console)'
-)
-@click.option(
     '--include-diffs/--no-diffs',
     default=False,
     help='Include file diffs in output (default: no)'
 )
 @click.option(
-    '--compact/--no-compact',
-    default=True,
-    help='Use compact JSON format (default: yes)'
+    '--unsave',
+    is_flag=True,
+    default=False,
+    help='Display output only, do not save to file'
 )
-def log(repo, since, until, author, branch, output, include_diffs, compact):
+def log(repo, since, until, author, branch, include_diffs, unsave):
     """
     เก็บข้อมูล commits และวิเคราะห์ด้วย AI ในคำสั่งเดียว
-    สร้าง daily log แบบ JSON ที่กระชับ
+    สร้าง daily log แบบ JSON ที่กระชับ และบันทึกเป็นไฟล์อัตโนมัติ
     
     Examples:
         talkbut log
-        talkbut log --since "1 day ago" --output daily_log.json
-        talkbut log --include-diffs --no-compact
-        talkbut log --author "john@example.com" --output my_work.json
+        talkbut log --since "1 day ago"
+        talkbut log --unsave
+        talkbut log --author "john@example.com"
     """
     try:
         # Determine repository path
@@ -152,22 +147,31 @@ def log(repo, since, until, author, branch, output, include_diffs, compact):
             
             daily_log["commits"].append(commit_data)
         
-        # Format JSON
-        if compact:
-            json_output = json.dumps(daily_log, ensure_ascii=False, separators=(',', ':'))
-        else:
-            json_output = json.dumps(daily_log, ensure_ascii=False, indent=2)
+        # Format JSON (always compact)
+        json_output = json.dumps(daily_log, ensure_ascii=False, separators=(',', ':'))
         
         # Output
-        if output:
-            output_path = Path(output)
-            output_path.parent.mkdir(parents=True, exist_ok=True)
-            with open(output_path, 'w', encoding='utf-8') as f:
-                f.write(json_output)
-            click.echo(f"\n💾 Daily log saved to: {output}")
-        else:
+        if unsave:
+            # Display only, do not save
             click.echo("\n📋 Daily Log:")
             click.echo(json_output)
+        else:
+            # Save to file automatically
+            # Generate filename: daily_log_YYYY-MM-DD.json
+            filename = f"daily_log_{report_date.isoformat()}.json"
+            output_dir = Path("data/logs")
+            output_dir.mkdir(parents=True, exist_ok=True)
+            output_path = output_dir / filename
+            
+            # Remove old file if exists (no prompt)
+            if output_path.exists():
+                output_path.unlink()
+                click.echo(f"🗑️  Removed old file: {output_path}")
+            
+            # Save new file
+            with open(output_path, 'w', encoding='utf-8') as f:
+                f.write(json_output)
+            click.echo(f"\n💾 Daily log saved to: {output_path}")
         
         # Show summary
         click.echo(f"\n✨ Summary:")

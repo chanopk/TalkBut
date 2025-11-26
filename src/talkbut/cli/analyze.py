@@ -3,7 +3,6 @@ Analyze command - วิเคราะห์ข้อมูลด้วย AI
 """
 import click
 from datetime import datetime, date, timedelta
-from talkbut.storage.cache import CacheManager
 from talkbut.processors.ai_analyzer import AIAnalyzer
 from talkbut.utils.logger import get_logger
 
@@ -54,12 +53,9 @@ def analyze(date, since, until, output):
             end_date = datetime.combine(target_date, datetime.max.time())
             click.echo(f"🔍 Analyzing commits for {target_date}")
         
-        # Load commits from cache
-        cache = CacheManager()
-        # Note: This is a simplified version - in production you'd need to
-        # implement a way to query cache by date range
-        click.echo("⚠️  This command requires cache query implementation.")
-        click.echo("💡 Try running 'talkbut collect' first, then use 'talkbut report' instead.")
+        # Note: Cache functionality removed
+        click.echo("⚠️  This command is deprecated.")
+        click.echo("💡 Use 'talkbut log' instead - it collects and analyzes in one step.")
         return
         
         click.echo(f"📊 Found {len(commits)} commits to analyze")

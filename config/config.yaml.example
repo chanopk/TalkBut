@@ -25,5 +25,5 @@ report:
   group_by: category  # Options: category, date, author
 
 storage:
-  cache_dir: ./data/cache
+  log_dir: ./data/logs
   retention_days: 90

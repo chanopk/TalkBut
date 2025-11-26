@@ -4,7 +4,6 @@ Report command - สร้างรายงานสรุปผลงาน
 import click
 from datetime import datetime, date, timedelta
 from pathlib import Path
-from talkbut.storage.cache import CacheManager
 from talkbut.processors.ai_analyzer import AIAnalyzer
 from talkbut.processors.formatter import ReportFormatter
 from talkbut.utils.logger import get_logger
@@ -53,12 +52,9 @@ def report(date, format, output, no_ai):
         
         click.echo(f"📄 Generating report for {target_date}")
         
-        # Load commits from cache
-        cache = CacheManager()
-        # Note: This is a simplified version - in production you'd need to
-        # implement a way to query cache by date range or load specific cache files
-        click.echo("⚠️  This command requires cache query implementation.")
-        click.echo("💡 Please run 'talkbut collect' first to gather commit data.")
+        # Note: Cache functionality removed
+        click.echo("⚠️  This command is deprecated.")
+        click.echo("💡 Use 'talkbut log' instead - it collects, analyzes, and saves in one step.")
         return
         
         if not commits:

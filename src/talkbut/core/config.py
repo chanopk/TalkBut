@@ -37,7 +37,7 @@ class ConfigManager:
                 "group_by": "category",
             },
             "storage": {
-                "cache_dir": "./data/cache",
+                "log_dir": "./data/logs",
                 "retention_days": 90,
             }
         }

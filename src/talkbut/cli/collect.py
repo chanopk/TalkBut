@@ -6,7 +6,6 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from talkbut.collectors.git_collector import GitCollector
 from talkbut.collectors.parser import DataParser
-from talkbut.storage.cache import CacheManager
 from talkbut.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -99,17 +98,9 @@ def collect(repo, since, until, author, branch, save, include_diffs):
         click.echo(f"   Files changed: {len(files_changed)}")
         click.echo(f"   Changes: +{total_insertions} / -{total_deletions}")
         
-        # Save to storage
+        # Note: Cache functionality removed - use 'talkbut log' for complete workflow
         if save:
-            click.echo("\n💾 Saving to cache...")
-            
-            # Save to cache
-            cache = CacheManager()
-            repo_name = Path(repo).name
-            date_range = f"{since}_to_{until or 'now'}"
-            cache.save_commits(repo_name, date_range, commits)
-            
-            click.echo("✅ Saved to cache")
+            click.echo("\n💡 Tip: Use 'talkbut log' to collect and analyze in one step")
         
         # Show sample commits
         click.echo("\n📋 Recent commits:")

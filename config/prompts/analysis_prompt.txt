@@ -16,7 +16,8 @@ INSTRUCTIONS:
 4. Identify any potential risks or areas that might need attention (if any).
 5. Keep the tone professional, encouraging, and objective.
 
-OUTPUT FORMAT (JSON):
+OUTPUT FORMAT:
+Return ONLY valid JSON (no markdown, no code blocks, no extra text):
 {{
   "summary": "A brief paragraph summarizing the day's work.",
   "categories": {{

@@ -2,6 +2,8 @@ git:
   repositories:
     - path: /Users/2202868/cimb-langgraph
       name: "cimb-langgraph"
+    - path: /Users/2202868/Documents/GitHub
+      name: "TalkBut"
 
 ai:
   provider: gemini
@@ -11,7 +13,7 @@ ai:
   max_tokens: 2000
 
 storage:
-  cache_dir: ./data/cache
+  log_dir: ./data/logs
 
 report:
   format: markdown

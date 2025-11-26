@@ -23,23 +23,20 @@
 ## 🚀 การใช้งานพื้นฐาน
 
 ```bash
-# สร้าง daily log แบบ compact (แสดงบนหน้าจอ)
+# สร้าง daily log และบันทึกอัตโนมัติ (ค่าพื้นฐาน)
 talkbut log
 
-# บันทึกเป็นไฟล์ (แนะนำ)
-talkbut log --output daily_log.json
+# แสดงผลบนหน้าจอเท่านั้น ไม่บันทึกไฟล์
+talkbut log --unsave
 
 # รวม file diffs ด้วย (ดูรายละเอียดการเปลี่ยนแปลง)
-talkbut log --include-diffs --output detailed_log.json
-
-# JSON แบบอ่านง่าย (มี indent)
-talkbut log --no-compact --output readable_log.json
+talkbut log --include-diffs
 
 # กรองเฉพาะงานของตัวเอง
-talkbut log --author "your-email@example.com" --output my_work.json
+talkbut log --author "your-email@example.com"
 
 # เก็บข้อมูลย้อนหลัง 1 สัปดาห์
-talkbut log --since "1 week ago" --output weekly_log.json
+talkbut log --since "1 week ago"
 ```
 
 ## ⚙️ Options
@@ -51,11 +48,9 @@ talkbut log --since "1 week ago" --output weekly_log.json
 | `--until` | `-u` | End date/time | now | `-u "2025-11-25"` |
 | `--author` | `-a` | Filter by author email/name | None | `-a "john@example.com"` |
 | `--branch` | `-b` | Filter by branch | current branch | `-b main` |
-| `--output` | `-o` | Save to file | print to console | `-o daily.json` |
 | `--include-diffs` | - | Include file diffs | no | `--include-diffs` |
 | `--no-diffs` | - | Exclude file diffs | - | `--no-diffs` |
-| `--compact` | - | Use compact JSON | yes | `--compact` |
-| `--no-compact` | - | Use readable JSON | - | `--no-compact` |
+| `--unsave` | - | Display only, do not save | no | `--unsave` |
 
 ### รายละเอียด Options
 
@@ -79,9 +74,15 @@ talkbut log --author "John"
 - `--include-diffs`: รวม file diffs ทั้งหมด (ไฟล์จะใหญ่มาก)
 - `--no-diffs` (default): ไม่รวม diffs (ประหยัดพื้นที่)
 
-#### `--compact` vs `--no-compact`
-- `--compact` (default): JSON แบบบรรทัดเดียว ประหยัดพื้นที่
-- `--no-compact`: JSON แบบมี indent อ่านง่าย
+#### `--unsave`
+- ไม่ระบุ (default): บันทึกไฟล์อัตโนมัติที่ `data/logs/daily_log_YYYY-MM-DD.json`
+- `--unsave`: แสดงผลบนหน้าจอเท่านั้น ไม่บันทึกไฟล์
+
+#### การบันทึกไฟล์อัตโนมัติ
+- ไฟล์จะถูกบันทึกที่ `data/logs/daily_log_YYYY-MM-DD.json`
+- ใช้ compact JSON format เสมอ (ประหยัดพื้นที่)
+- ถ้ารันซ้ำในวันเดียวกัน ไฟล์เก่าจะถูกลบและสร้างใหม่อัตโนมัติ
+- ไม่ต้องระบุชื่อไฟล์ ระบบจะสร้างให้อัตโนมัติตามวันที่
 
 ## 📋 โครงสร้าง Output
 
@@ -117,68 +118,33 @@ talkbut log --author "John"
 
 ### ตัวอย่าง Output
 
-#### 1. แบบ Compact (ประหยัดพื้นที่)
+#### 1. แบบ Compact (ค่าพื้นฐาน - บันทึกอัตโนมัติ)
 
 ```bash
-talkbut log --output compact.json
+talkbut log
 ```
+
+ไฟล์จะถูกบันทึกที่ `data/logs/daily_log_2025-11-25.json`:
 
 ```json
 {"date":"2025-11-25","summary":"Refactored coach service with improved orchestration","stats":{"commits":1,"files":7,"insertions":35,"deletions":147},"categories":{"refactor":1},"highlights":["Simplified coach orchestrator logic","Updated AI coach simulator"],"commits":[{"hash":"d7911c7","time":"16:48","message":"refactor coach service","files":["README.md","config/coach_settings.json"],"changes":"+35/-147","tickets":[]}]}
 ```
 
-**ขนาดไฟล์**: ~300-500 bytes ต่อ commit
+**ขนาดไฟล์**: ~300-500 bytes ต่อ commit  
+**ตำแหน่ง**: `data/logs/daily_log_YYYY-MM-DD.json`
 
-#### 2. แบบ Readable (อ่านง่าย)
+#### 2. แบบแสดงบนหน้าจอ (ไม่บันทึกไฟล์)
 
 ```bash
-talkbut log --no-compact --output readable.json
+talkbut log --unsave
 ```
 
-```json
-{
-  "date": "2025-11-25",
-  "summary": "Refactored coach service with improved orchestration and updated AI coach simulator",
-  "stats": {
-    "commits": 1,
-    "files": 7,
-    "insertions": 35,
-    "deletions": 147
-  },
-  "categories": {
-    "refactor": 1
-  },
-  "highlights": [
-    "Simplified coach orchestrator logic",
-    "Updated AI coach simulator"
-  ],
-  "commits": [
-    {
-      "hash": "d7911c7",
-      "time": "16:48",
-      "message": "refactor coach service (Reviewed by Chanop K.)",
-      "files": [
-        "README.md",
-        "config/coach_settings.json",
-        "libs/ai_components/orchestrators/coach_orchestrator.py",
-        "libs/ai_components/personas/ai_coach_simulator.py",
-        "libs/ai_components/prompts/coach_prompts.py",
-        "libs/services/coach_service.py",
-        "libs/shared/models/coach.py"
-      ],
-      "changes": "+35/-147",
-      "tickets": []
-    }
-  ]
-}
-```
-
-**ขนาดไฟล์**: ~800-1200 bytes ต่อ commit
+แสดงผล JSON บนหน้าจอเท่านั้น ไม่บันทึกไฟล์
 
 #### 3. แบบรวม Diffs (ละเอียดสุด)
 
 ```bash
-talkbut log --include-diffs --no-compact --output detailed.json
+talkbut log --include-diffs
 ```
 
 ```json
@@ -210,76 +176,66 @@ talkbut log --include-diffs --no-compact --output detailed.json
 สร้าง log สำหรับ standup meeting ทุกเช้า
 
 ```bash
-# แบบง่าย
-talkbut log --since "yesterday" --output standup.json
+# แบบง่าย - บันทึกอัตโนมัติที่ data/logs/daily_log_YYYY-MM-DD.json
+talkbut log --since "yesterday"
 
-# แบบมีชื่อไฟล์ตามวันที่
-talkbut log --since "yesterday" --output standup-$(date +%Y-%m-%d).json
-
-# แบบอ่านง่าย สำหรับนำเสนอ
-talkbut log --since "yesterday" --no-compact --output standup-readable.json
+# แสดงบนหน้าจอเท่านั้น
+talkbut log --since "yesterday" --unsave
 ```
 
-**ผลลัพธ์**: ไฟล์ JSON ที่มีสรุปงานเมื่อวาน พร้อม AI summary
+**ผลลัพธ์**: ไฟล์ JSON ที่มีสรุปงานเมื่อวาน พร้อม AI summary บันทึกอัตโนมัติที่ `data/logs/`
 
 ### 2. Personal Work Log
 เก็บ log งานของตัวเองแยกจากทีม
 
 ```bash
 # กรองเฉพาะงานของตัวเอง
-talkbut log --author "john@example.com" --output my-work.json
+talkbut log --author "john@example.com"
 
 # เก็บงานของตัวเองย้อนหลัง 1 สัปดาห์
-talkbut log --author "john@example.com" --since "1 week ago" --output my-weekly-work.json
+talkbut log --author "john@example.com" --since "1 week ago"
 
 # เก็บงานในช่วงเวลาที่กำหนด
 talkbut log --author "john@example.com" \
   --since "2025-11-01" \
-  --until "2025-11-30" \
-  --output november-work.json
+  --until "2025-11-30"
 ```
 
-**ผลลัพธ์**: ไฟล์ JSON ที่มีเฉพาะ commits ของคุณ
+**ผลลัพธ์**: ไฟล์ JSON ที่มีเฉพาะ commits ของคุณ บันทึกอัตโนมัติที่ `data/logs/`
 
 ### 3. Code Review Preparation
 สร้าง log พร้อม diffs สำหรับ code review
 
 ```bash
 # รวม diffs ทั้งหมด
-talkbut log --include-diffs --no-compact --output review-log.json
+talkbut log --include-diffs
 
 # กรองเฉพาะ branch ที่จะ review
-talkbut log --branch feature/new-feature \
-  --include-diffs \
-  --no-compact \
-  --output feature-review.json
+talkbut log --branch feature/new-feature --include-diffs
 
 # รวม diffs และกรองตาม author
 talkbut log --author "john@example.com" \
   --include-diffs \
-  --since "1 week ago" \
-  --output john-review.json
+  --since "1 week ago"
 ```
 
-**ผลลัพธ์**: ไฟล์ JSON ที่มีรายละเอียดการเปลี่ยนแปลงทั้งหมด
+**ผลลัพธ์**: ไฟล์ JSON ที่มีรายละเอียดการเปลี่ยนแปลงทั้งหมด บันทึกอัตโนมัติที่ `data/logs/`
 
 ### 4. Weekly Summary
 สร้าง log สำหรับสรุปสัปดาห์
 
 ```bash
 # สรุปสัปดาห์ปัจจุบัน
-talkbut log --since "1 week ago" --output weekly-$(date +%Y-W%V).json
+talkbut log --since "1 week ago"
 
 # สรุปสัปดาห์ที่แล้ว
-talkbut log --since "2 weeks ago" --until "1 week ago" --output last-week.json
+talkbut log --since "2 weeks ago" --until "1 week ago"
 
 # สรุปสัปดาห์แบบละเอียด
-talkbut log --since "1 week ago" \
-  --no-compact \
-  --output weekly-detailed.json
+talkbut log --since "1 week ago" --include-diffs
 ```
 
-**ผลลัพธ์**: ไฟล์ JSON ที่รวมงานทั้งสัปดาห์
+**ผลลัพธ์**: ไฟล์ JSON ที่รวมงานทั้งสัปดาห์ บันทึกอัตโนมัติที่ `data/logs/`
 
 ### 5. Automated Daily Backup
 ตั้ง cron job เพื่อสร้าง log อัตโนมัติทุกวัน
@@ -287,28 +243,29 @@ talkbut log --since "1 week ago" \
 ```bash
 # เพิ่มใน crontab (crontab -e)
 # รันทุกวันเวลา 18:00 น.
-0 18 * * * cd /path/to/project && talkbut log --output ~/logs/daily-$(date +\%Y-\%m-\%d).json
+0 18 * * * cd /path/to/project && talkbut log
 
 # หรือใช้ script
 #!/bin/bash
 # save-daily-log.sh
 cd /path/to/project
-talkbut log --output ~/logs/daily-$(date +%Y-%m-%d).json
+talkbut log
 echo "Daily log saved at $(date)"
 ```
 
-**ผลลัพธ์**: ไฟล์ JSON ใหม่ทุกวันใน `~/logs/`
+**ผลลัพธ์**: ไฟล์ JSON ใหม่ทุกวันใน `data/logs/` (บันทึกอัตโนมัติ)
 
 ### 6. Team Report
 สร้างรายงานสำหรับทีม
 
 ```bash
 # รายงานทั้งทีม
-talkbut log --since "1 day ago" --output team-daily.json
+talkbut log --since "1 day ago"
 
-# รายงานแต่ละคน
+# รายงานแต่ละคน (แสดงบนหน้าจอ)
 for email in john@example.com jane@example.com; do
-  talkbut log --author "$email" --output "logs/$(echo $email | cut -d@ -f1).json"
+  echo "=== Report for $email ==="
+  talkbut log --author "$email" --unsave
 done
 ```
 
@@ -317,12 +274,10 @@ done
 
 ```bash
 # Sprint 2 สัปดาห์
-talkbut log --since "2 weeks ago" --output sprint-summary.json
+talkbut log --since "2 weeks ago"
 
 # Sprint ที่กำหนดวันเริ่มต้น-สิ้นสุด
-talkbut log --since "2025-11-01" \
-  --until "2025-11-14" \
-  --output sprint-1.json
+talkbut log --since "2025-11-01" --until "2025-11-14"
 ```
 
 ### 8. Monthly Report
@@ -330,12 +285,11 @@ talkbut log --since "2025-11-01" \
 
 ```bash
 # เดือนปัจจุบัน
-talkbut log --since "$(date +%Y-%m-01)" --output monthly-$(date +%Y-%m).json
+talkbut log --since "$(date +%Y-%m-01)"
 
 # เดือนที่แล้ว
 talkbut log --since "$(date -d 'last month' +%Y-%m-01)" \
-  --until "$(date +%Y-%m-01)" \
-  --output monthly-$(date -d 'last month' +%Y-%m).json
+  --until "$(date +%Y-%m-01)"
 ```
 
 ## 🎯 ข้อดีของ JSON Format
@@ -437,30 +391,29 @@ requests.post('https://api.example.com/logs', json=data)
 ### 1. เลือก Format ให้เหมาะสม
 
 ```bash
-# Compact - สำหรับ backup ระยะยาว
-talkbut log --compact --output backup.json
-
-# Readable - สำหรับอ่านและ review
-talkbut log --no-compact --output review.json
+# Compact (ค่าพื้นฐาน) - สำหรับ backup ระยะยาว
+talkbut log
 
 # With diffs - สำหรับ code review
-talkbut log --include-diffs --no-compact --output code-review.json
+talkbut log --include-diffs
+
+# แสดงบนหน้าจอ - สำหรับดูข้อมูลชั่วคราว
+talkbut log --unsave
 ```
 
-### 2. ตั้งชื่อไฟล์ให้มีระบบ
+### 2. ไฟล์จะถูกบันทึกอัตโนมัติ
 
 ```bash
-# ตามวันที่
-talkbut log --output daily-$(date +%Y-%m-%d).json
+# ระบบจะสร้างชื่อไฟล์อัตโนมัติตามวันที่
+# ไฟล์จะถูกบันทึกที่ data/logs/daily_log_YYYY-MM-DD.json
+talkbut log
 
-# ตามสัปดาห์
-talkbut log --since "1 week ago" --output weekly-$(date +%Y-W%V).json
+# ถ้ารันซ้ำในวันเดียวกัน ไฟล์เก่าจะถูกลบและสร้างใหม่
+talkbut log  # รันครั้งที่ 1
+talkbut log  # รันครั้งที่ 2 - ไฟล์เก่าจะถูกลบ
 
-# ตามเดือน
-talkbut log --since "$(date +%Y-%m-01)" --output monthly-$(date +%Y-%m).json
-
-# ตาม author
-talkbut log --author "john@example.com" --output john-$(date +%Y-%m-%d).json
+# ตรวจสอบไฟล์ที่บันทึก
+ls -la data/logs/
 ```
 
 ### 3. ใช้ Automation
@@ -469,10 +422,8 @@ talkbut log --author "john@example.com" --output john-$(date +%Y-%m-%d).json
 # สร้าง script สำหรับ daily backup
 cat > ~/bin/talkbut-daily.sh << 'EOF'
 #!/bin/bash
-LOG_DIR=~/work-logs
-mkdir -p $LOG_DIR
 cd /path/to/your/project
-talkbut log --output $LOG_DIR/daily-$(date +%Y-%m-%d).json
+talkbut log
 echo "Daily log saved: $(date)"
 EOF
 
@@ -481,36 +432,39 @@ chmod +x ~/bin/talkbut-daily.sh
 # เพิ่มใน crontab
 crontab -e
 # เพิ่มบรรทัดนี้: รันทุกวันเวลา 18:00
-0 18 * * * ~/bin/talkbut-daily.sh >> ~/work-logs/cron.log 2>&1
+0 18 * * * ~/bin/talkbut-daily.sh >> ~/talkbut-cron.log 2>&1
 ```
 
 ### 4. กรองข้อมูลให้เหมาะสม
 
 ```bash
 # เฉพาะงานของตัวเอง
-talkbut log --author "$(git config user.email)" --output my-work.json
+talkbut log --author "$(git config user.email)"
 
 # เฉพาะ branch ปัจจุบัน
-talkbut log --branch "$(git branch --show-current)" --output current-branch.json
+talkbut log --branch "$(git branch --show-current)"
 
 # เฉพาะช่วงเวลาที่กำหนด
-talkbut log --since "2025-11-01" --until "2025-11-30" --output november.json
+talkbut log --since "2025-11-01" --until "2025-11-30"
 ```
 
 ### 5. จัดเก็บ Logs อย่างเป็นระบบ
 
 ```bash
-# สร้างโครงสร้างโฟลเดอร์
-mkdir -p ~/work-logs/{daily,weekly,monthly}
+# ไฟล์จะถูกบันทึกอัตโนมัติที่ data/logs/
+# โครงสร้างโฟลเดอร์จะถูกสร้างอัตโนมัติ
 
 # Daily logs
-talkbut log --output ~/work-logs/daily/$(date +%Y-%m-%d).json
+talkbut log
 
-# Weekly logs (ทุกวันศุกร์)
-talkbut log --since "1 week ago" --output ~/work-logs/weekly/$(date +%Y-W%V).json
+# Weekly logs
+talkbut log --since "1 week ago"
 
-# Monthly logs (วันสุดท้ายของเดือน)
-talkbut log --since "$(date +%Y-%m-01)" --output ~/work-logs/monthly/$(date +%Y-%m).json
+# Monthly logs
+talkbut log --since "$(date +%Y-%m-01)"
+
+# ตรวจสอบไฟล์ที่บันทึก
+ls -la data/logs/
 ```
 
 ### 6. ใช้ Git Aliases
@@ -518,9 +472,9 @@ talkbut log --since "$(date +%Y-%m-01)" --output ~/work-logs/monthly/$(date +%Y-
 ```bash
 # เพิ่มใน ~/.gitconfig
 [alias]
-    daily-log = !talkbut log --output ~/work-logs/daily-$(date +%Y-%m-%d).json
-    weekly-log = !talkbut log --since "1 week ago" --output ~/work-logs/weekly-$(date +%Y-W%V).json
-    my-log = !talkbut log --author "$(git config user.email)" --output my-work.json
+    daily-log = !talkbut log
+    weekly-log = !talkbut log --since "1 week ago"
+    my-log = !talkbut log --author "$(git config user.email)"
 
 # ใช้งาน
 git daily-log
@@ -532,24 +486,24 @@ git my-log
 
 ```bash
 # Backup logs ทุกสัปดาห์
-tar -czf ~/backups/work-logs-$(date +%Y-W%V).tar.gz ~/work-logs/daily/*.json
+tar -czf ~/backups/work-logs-$(date +%Y-W%V).tar.gz data/logs/*.json
 
 # ลบ logs เก่าที่เกิน 90 วัน
-find ~/work-logs/daily -name "*.json" -mtime +90 -delete
+find data/logs -name "daily_log_*.json" -mtime +90 -delete
 ```
 
 ### 8. Integration กับ Tools อื่น
 
 ```bash
 # ส่งไปยัง Slack
-talkbut log | jq -r '.summary' | slack-cli send "#daily-updates"
+talkbut log --unsave | jq -r '.summary' | slack-cli send "#daily-updates"
 
 # ส่งไปยัง Email
-talkbut log --no-compact | mail -s "Daily Work Log" manager@example.com
+talkbut log --unsave | mail -s "Daily Work Log" manager@example.com
 
 # Upload ไปยัง Cloud Storage
-talkbut log --output /tmp/daily.json && \
-  aws s3 cp /tmp/daily.json s3://my-bucket/logs/$(date +%Y-%m-%d).json
+talkbut log && \
+  aws s3 cp data/logs/daily_log_$(date +%Y-%m-%d).json s3://my-bucket/logs/
 ```
 
 ## 🔧 Troubleshooting
@@ -573,7 +527,7 @@ echo 'export GEMINI_API_KEY="your-api-key-here"' >> ~/.zshrc
 source ~/.zshrc
 
 # 5. ลองรันอีกครั้ง
-talkbut log --output test.json
+talkbut log
 ```
 
 ### ปัญหา: ไม่มี commits
@@ -603,17 +557,17 @@ talkbut log --since "1 month ago" --output test.json
 **อาการ**: ไฟล์ JSON ใหญ่มาก (> 10 MB)
 
 ```bash
-# 1. ใช้แบบไม่รวม diffs (แนะนำ)
-talkbut log --no-diffs --output log.json
+# 1. ใช้แบบไม่รวม diffs (แนะนำ - ค่าพื้นฐาน)
+talkbut log --no-diffs
 
 # 2. กรองเฉพาะช่วงเวลาสั้นๆ
-talkbut log --since "1 day ago" --include-diffs --output log.json
+talkbut log --since "1 day ago" --include-diffs
 
 # 3. กรองเฉพาะ author
-talkbut log --author "your-email" --include-diffs --output log.json
+talkbut log --author "your-email" --include-diffs
 
 # 4. ตรวจสอบขนาดไฟล์ก่อน
-talkbut log --include-diffs | wc -c
+talkbut log --unsave --include-diffs | wc -c
 ```
 
 ### ปัญหา: Repository path ไม่ถูกต้อง
@@ -625,7 +579,7 @@ talkbut log --include-diffs | wc -c
 git status
 
 # 2. ระบุ path ชัดเจน
-talkbut log --repo /path/to/your/project --output log.json
+talkbut log --repo /path/to/your/project
 
 # 3. ตรวจสอบ config
 talkbut config show
@@ -640,16 +594,16 @@ talkbut config init
 
 ```bash
 # 1. ตรวจสอบ permission ของโฟลเดอร์
-ls -la ~/work-logs
+ls -la data/logs
 
-# 2. สร้างโฟลเดอร์ถ้ายังไม่มี
-mkdir -p ~/work-logs
+# 2. สร้างโฟลเดอร์ถ้ายังไม่มี (ระบบจะสร้างอัตโนมัติ)
+mkdir -p data/logs
 
 # 3. ตรวจสอบว่าเขียนไฟล์ได้
-touch ~/work-logs/test.json && rm ~/work-logs/test.json
+touch data/logs/test.json && rm data/logs/test.json
 
-# 4. ใช้ path อื่น
-talkbut log --output /tmp/log.json
+# 4. ใช้ --unsave เพื่อแสดงผลเท่านั้น
+talkbut log --unsave
 ```
 
 ### ปัญหา: JSON parsing error
@@ -658,13 +612,13 @@ talkbut log --output /tmp/log.json
 
 ```bash
 # 1. ตรวจสอบ JSON
-cat log.json | jq .
+cat data/logs/daily_log_*.json | jq .
 
 # 2. ลองสร้างใหม่
-talkbut log --output log-new.json
+talkbut log
 
-# 3. ใช้ --no-compact เพื่อดู format
-talkbut log --no-compact --output log-readable.json
+# 3. แสดงผลบนหน้าจอเพื่อตรวจสอบ
+talkbut log --unsave | jq .
 ```
 
 ### ปัญหา: Slow performance
@@ -673,13 +627,13 @@ talkbut log --no-compact --output log-readable.json
 
 ```bash
 # 1. ลดช่วงเวลา
-talkbut log --since "1 day ago" --output log.json
+talkbut log --since "1 day ago"
 
-# 2. ไม่รวม diffs
-talkbut log --no-diffs --output log.json
+# 2. ไม่รวม diffs (ค่าพื้นฐาน)
+talkbut log --no-diffs
 
 # 3. กรองเฉพาะ author
-talkbut log --author "your-email" --output log.json
+talkbut log --author "your-email"
 
 # 4. ตรวจสอบจำนวน commits
 git log --since "1 day ago" --oneline | wc -l
@@ -690,18 +644,18 @@ git log --since "1 day ago" --oneline | wc -l
 **อาการ**: ภาษาไทยแสดงเป็น \uXXXX
 
 ```bash
-# 1. ใช้ --no-compact
-talkbut log --no-compact --output log.json
+# 1. ตรวจสอบ encoding
+file data/logs/daily_log_*.json
 
-# 2. ตรวจสอบ encoding
-file log.json
+# 2. อ่านด้วย jq
+cat data/logs/daily_log_*.json | jq -r '.summary'
 
-# 3. อ่านด้วย jq
-cat log.json | jq -r '.summary'
-
-# 4. ตั้งค่า locale
+# 3. ตั้งค่า locale
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
+
+# 4. ลองสร้างใหม่
+talkbut log
 ```
 
 ### ขอความช่วยเหลือ
@@ -771,11 +725,12 @@ talkbut log --include-diffs --no-compact --output review.json
 
 คำสั่ง `talkbut log` เป็นคำสั่งหลักที่ออกแบบมาเพื่อความรวดเร็วและความสะดวก:
 
-- **ใช้งานง่าย** - คำสั่งเดียวจบ
+- **ใช้งานง่าย** - คำสั่งเดียวจบ บันทึกอัตโนมัติ
 - **ยืดหยุ่น** - ปรับแต่งได้หลากหลาย
 - **ประหยัด** - JSON format ที่กระชับ
 - **ครบถ้วน** - มีทั้งข้อมูลและการวิเคราะห์
 - **เหมาะสำหรับ automation** - ใช้กับ cron job ได้ดี
+- **บันทึกอัตโนมัติ** - ไม่ต้องระบุชื่อไฟล์
 
 เริ่มต้นใช้งานได้ง่ายๆ:
 
@@ -786,8 +741,8 @@ pip install -e .
 # ตั้งค่า API key
 export GEMINI_API_KEY="your-key"
 
-# สร้าง daily log
-talkbut log --output daily.json
+# สร้าง daily log (บันทึกอัตโนมัติที่ data/logs/)
+talkbut log
 ```
 
 Happy logging! 🎯
