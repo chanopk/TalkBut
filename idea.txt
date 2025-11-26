@@ -1,0 +1,128 @@
+# TalkBut Project Idea
+ชื่อโปรเจค: TalkBut (ล้อเลียนเสียงคำว่า "ตอกบัตร" ในภาษาไทย)
+
+## วัตถุประสงค์หลัก
+เก็บข้อมูลการทำงานในแต่ละวันเพื่อจดบันทึกงานที่ทำ และเก็บ log ไว้สำหรับการสรุปผลงาน
+ทำให้ team lead หรือ manager สามารถตรวจสอบและติดตามผลงานได้ง่ายขึ้น
+
+## กลุ่มเป้าหมายเริ่มต้น
+Software Developer - เน้นการเก็บข้อมูลจาก git log เป็นหลัก
+
+## คุณสมบัติหลัก
+
+### 1. การเก็บข้อมูล
+- เก็บข้อมูลการทำงานจาก git log (commits, branches, pull requests)
+- บันทึก log การทำงานประจำวัน
+- เก็บข้อมูลลงที่ส่วนกลาง (centralized storage)
+
+### 2. การวิเคราะห์ข้อมูล
+- ใช้ AI ในการวิเคราะห์และสรุปข้อมูลการทำงาน
+- สร้างรายงานสรุปผลงานอัตโนมัติ
+- จัดหมวดหมู่และจัดลำดับความสำคัญของงาน
+
+### 3. การรายงานผล
+- สร้างรายงานที่อ่านง่ายสำหรับ team lead/manager
+- แสดงผลการทำงานในรูปแบบที่เข้าใจง่าย
+- สามารถ export ข้อมูลในรูปแบบต่างๆ
+
+## MVP/POC (Minimum Viable Product / Proof of Concept)
+
+### เฟสแรก: Python Script
+- สร้าง Python script อย่างง่ายสำหรับ:
+  - ดึงข้อมูลจาก git log
+  - วิเคราะห์ commits และ changes
+  - สร้างรายงานสรุปพื้นฐาน
+  - เก็บข้อมูลลง local cache (JSON)
+
+### เทคโนโลยีที่ใช้ในเฟสแรก:
+- Python (core language)
+- GitPython (สำหรับดึงข้อมูล git)
+- AI/LLM API (สำหรับวิเคราะห์และสรุปข้อมูล)
+- JSON (สำหรับเก็บข้อมูล)
+
+## แผนการขยายในอนาคต
+
+### 1. รองรับข้อมูลหลากหลายรูปแบบ
+- Integration กับ project management tools (Jira, Trello, Asana)
+- เชื่อมต่อกับ communication tools (Slack, Teams)
+- รองรับ time tracking tools
+- เก็บข้อมูลจาก CI/CD pipelines
+- รองรับการบันทึกข้อมูลด้วยตนเอง (manual logging)
+
+### 2. รองรับตำแหน่งงานหลากหลาย
+- Product Manager: tracking features, requirements, decisions
+- Designer: design iterations, feedback, deliverables
+- QA/Tester: test cases, bugs found, testing coverage
+- DevOps: deployments, infrastructure changes, incidents
+- Data Scientist: experiments, model performance, insights
+
+### 3. รูปแบบการทำงานที่หลากหลาย
+- Remote work tracking
+- Hybrid work model
+- Agile/Scrum workflows
+- Kanban workflows
+- Waterfall projects
+
+### 4. Features ขั้นสูง
+- Dashboard แสดงผลแบบ real-time
+- Analytics และ insights ขั้นสูง
+- Team collaboration features
+- Performance metrics และ KPI tracking
+- Automated reporting และ notifications
+- Mobile application
+- API สำหรับ integration กับระบบอื่นๆ
+
+## สถาปัตยกรรมระบบ (ในอนาคต)
+
+### Data Collection Layer
+- Agents/Plugins สำหรับแต่ละ data source
+- Standardized data format
+
+### Storage Layer
+- Enhanced caching strategies
+- Object storage สำหรับ artifacts (optional)
+- Performance optimization
+
+### Processing Layer
+- AI/ML pipeline สำหรับวิเคราะห์ข้อมูล
+- Background jobs สำหรับ data processing
+- Real-time processing สำหรับ critical events
+
+### API Layer
+- RESTful API
+- GraphQL (optional)
+- Webhooks สำหรับ integrations
+
+### Presentation Layer
+- Web application
+- Mobile application
+- CLI tool
+- IDE plugins
+
+## ประโยชน์ที่คาดหวัง
+
+### สำหรับ Developer
+- ลดเวลาในการเขียนรายงานสรุปงาน
+- มี log ประจำวันที่ครบถ้วน
+- ติดตามความก้าวหน้าของตนเองได้
+
+### สำหรับ Team Lead/Manager
+- เห็นภาพรวมการทำงานของทีมได้ชัดเจน
+- ตัดสินใจได้รวดเร็วขึ้นด้วยข้อมูลที่ถูกต้อง
+- ประเมินผลงานได้แม่นยำยิ่งขึ้น
+- ระบุ bottleneck และปัญหาได้เร็วขึ้น
+
+### สำหรับองค์กร
+- เพิ่มประสิทธิภาพการทำงาน
+- มีข้อมูลสำหรับการวางแผนและพยากรณ์
+- ปรับปรุงกระบวนการทำงานได้ดีขึ้น
+- เพิ่ม transparency ในองค์กร
+
+## Next Steps
+1. ✅ จัดทำเอกสาร idea และ requirements
+2. ✅ ออกแบบ architecture สำหรับ MVP
+3. ✅ พัฒนา Python script พื้นฐาน (กำลังดำเนินการ - Phase 1 Foundation เสร็จแล้ว)
+4. ✅ ทดสอบกับ git repository จริง
+ ⏳ 
+ ⏳ รวบรวม feedback และปรับปรุง
+ ⏳ วางแผนสำหรับ features ขั้นต่อไป

@@ -1,0 +1,29 @@
+# TalkBut Configuration
+
+git:
+  repositories:
+    # - path: /Users/2202868
+    #   name: "cimb-langgraph"
+    # - path: ./relativePath
+    #   name: "Current Project"
+  
+  default_branch: main
+  author_filter: null  # Set to your email to filter commits: "user@example.com"
+
+ai:
+  provider: gemini  # Options: gemini, openai
+  api_key_env: GEMINI_API_KEY
+  model: gemini-2.0-flash
+  temperature: 0.3
+  max_tokens: 2000
+
+report:
+  default_format: markdown
+  include_stats: true
+  include_file_list: false
+  sort_order: asc  # asc = chronological (morning -> evening), desc = reverse
+  group_by: category  # Options: category, date, author
+
+storage:
+  cache_dir: ./data/cache
+  retention_days: 90

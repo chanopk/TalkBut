@@ -1,0 +1,18 @@
+git:
+  repositories:
+    - path: /Users/2202868/cimb-langgraph
+      name: "cimb-langgraph"
+
+ai:
+  provider: gemini
+  api_key_env: GEMINI_API_KEY
+  model: gemini-2.0-flash
+  temperature: 0.3
+  max_tokens: 2000
+
+storage:
+  cache_dir: ./data/cache
+
+report:
+  format: markdown
+  output_dir: ./reports
