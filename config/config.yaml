@@ -2,7 +2,7 @@ git:
   repositories:
     - path: /Users/2202868/cimb-langgraph
       name: "cimb-langgraph"
-    - path: /Users/2202868/Documents/GitHub
+    - path: /Users/2202868/Documents/GitHub/TalkBut
       name: "TalkBut"
 
 ai:

@@ -63,46 +63,77 @@ def log(repo, since, until, author, branch, include_diffs, unsave):
         talkbut log --author "john@example.com"
     """
     try:
-        # Determine repository path
+        # Determine repository path(s)
+        repos_to_process = []
         if repo is None:
             config = ConfigManager()
             repos = config.git_repos
             if repos and len(repos) > 0:
-                repo = repos[0].get('path', '.')
-                click.echo(f"📝 Using repository from config: {repos[0].get('name', repo)}")
+                # Use all configured repositories
+                repos_to_process = repos
+                click.echo(f"📝 Using {len(repos)} repositories from config:")
+                for r in repos:
+                    click.echo(f"   • {r.get('name', 'Unnamed')}: {r.get('path', 'N/A')}")
             else:
-                repo = '.'
+                # Use current directory
+                repos_to_process = [{'path': '.', 'name': 'Current Directory'}]
                 click.echo("📝 No repository in config, using current directory")
+        else:
+            # Use specified repository
+            repos_to_process = [{'path': repo, 'name': repo}]
         
-        click.echo(f"🔍 Collecting commits from: {repo}")
+        click.echo(f"\n🔍 Collecting commits:")
         click.echo(f"   Since: {since}")
         if until:
             click.echo(f"   Until: {until}")
         if author:
             click.echo(f"   Author: {author}")
         
-        # Initialize collector
-        collector = GitCollector(repo)
+        # Collect commits from all repositories
+        all_commits = []
         parser = DataParser()
         
-        # Collect commits with optional diffs
-        commits = collector.collect_commits(
-            since=since,
-            until=until,
-            author=author,
-            branch=branch,
-            include_diffs=include_diffs
-        )
+        for repo_info in repos_to_process:
+            repo_path = repo_info.get('path', '.')
+            repo_name = repo_info.get('name', repo_path)
+            
+            try:
+                click.echo(f"\n   Processing: {repo_name}...")
+                collector = GitCollector(repo_path)
+                
+                commits = collector.collect_commits(
+                    since=since,
+                    until=until,
+                    author=author,
+                    branch=branch,
+                    include_diffs=include_diffs
+                )
+                
+                if commits:
+                    click.echo(f"   ✓ Found {len(commits)} commits")
+                    all_commits.extend(commits)
+                else:
+                    click.echo(f"   ⚠ No commits found")
+                    
+            except Exception as e:
+                click.echo(f"   ✗ Error: {e}")
+                logger.warning(f"Failed to collect from {repo_name}: {e}")
+        
+        # Use collected commits
+        commits = all_commits
         
         if not commits:
-            click.echo("⚠️  No commits found in the specified range.")
+            click.echo("\n⚠️  No commits found in the specified range.")
             return
+        
+        # Sort commits by date (newest first)
+        commits.sort(key=lambda c: c.date, reverse=True)
         
         # Enrich commits with parsed metadata
         for commit in commits:
             parser.enrich_commit(commit)
         
-        click.echo(f"✅ Found {len(commits)} commits")
+        click.echo(f"\n✅ Total: {len(commits)} commits from {len(repos_to_process)} repository(ies)")
         
         # Analyze with AI
         click.echo("🤖 Analyzing with AI...")
