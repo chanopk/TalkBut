@@ -17,13 +17,6 @@ class ReportFormatter:
         md.append(report.ai_summary)
         md.append("")
         
-        # Highlights
-        if report.highlights:
-            md.append("## ✨ Highlights")
-            for highlight in report.highlights:
-                md.append(f"- {highlight}")
-            md.append("")
-        
         # Stats
         md.append("## 📊 Statistics")
         md.append(f"- **Total Commits**: {report.total_commits}")
@@ -38,13 +31,12 @@ class ReportFormatter:
                 md.append(f"- **{cat}**: {count}")
             md.append("")
 
-        # Timeline
-        if report.timeline:
-            md.append("## ⏱️ Timeline")
-            for item in report.timeline:
-                time = item.get("time", "")
-                activity = item.get("activity", "")
-                md.append(f"- **{time}**: {activity}")
+        # Tasks
+        if report.tasks:
+            md.append("## ✅ Tasks")
+            for task in report.tasks:
+                task_name = task.get("task", "") if isinstance(task, dict) else str(task)
+                md.append(f"- {task_name}")
             md.append("")
             
         # Detailed Commits
@@ -74,10 +66,13 @@ class ReportFormatter:
             f"Summary: {report.ai_summary}",
             "",
             f"Stats: {report.total_commits} commits, +{report.insertions}/-{report.deletions}",
-            "",
-            "Highlights:",
         ]
-        for h in report.highlights:
-            lines.append(f"- {h}")
+        
+        if report.tasks:
+            lines.append("")
+            lines.append("Tasks:")
+            for task in report.tasks:
+                task_name = task.get("task", "") if isinstance(task, dict) else str(task)
+                lines.append(f"- {task_name}")
             
         return "\n".join(lines)

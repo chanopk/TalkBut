@@ -31,16 +31,7 @@ logger = get_logger(__name__)
     help='Save analysis to file'
 )
 def analyze(date, since, until, output):
-    """
-    วิเคราะห์ commits ด้วย AI และสร้างรายงาน
-    
-    Examples:
-        talkbut analyze
-        talkbut analyze --date today
-        talkbut analyze --date yesterday
-        talkbut analyze --date 2023-01-15
-        talkbut analyze --since 2023-01-01 --until 2023-01-31
-    """
+    """(deprecated) ใช้ log แทน"""
     try:
         # Parse date
         if since and until:

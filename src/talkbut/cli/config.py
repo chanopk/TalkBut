@@ -11,9 +11,7 @@ logger = get_logger(__name__)
 
 @click.group()
 def config():
-    """
-    จัดการ configuration settings
-    """
+    """จัดการ config"""
     pass
 
 @config.command('show')

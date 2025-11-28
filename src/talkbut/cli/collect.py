@@ -48,15 +48,7 @@ logger = get_logger(__name__)
     help='Include file diffs in collected data (default: no)'
 )
 def collect(repo, since, until, author, branch, save, include_diffs):
-    """
-    เก็บข้อมูล commits จาก Git repository
-    
-    Examples:
-        talkbut collect
-        talkbut collect --repo /path/to/project
-        talkbut collect --since "2023-01-01" --until "2023-01-31"
-        talkbut collect --author "john@example.com"
-    """
+    """ดู commits จาก Git (ไม่วิเคราะห์)"""
     try:
         click.echo(f"🔍 Collecting commits from: {repo}")
         click.echo(f"   Since: {since}")

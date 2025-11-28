@@ -34,16 +34,7 @@ logger = get_logger(__name__)
     help='Skip AI analysis (faster, basic stats only)'
 )
 def report(date, format, output, no_ai):
-    """
-    สร้างรายงานสรุปผลงานประจำวัน
-    
-    Examples:
-        talkbut report
-        talkbut report --date today --format markdown
-        talkbut report --date yesterday --output report.md
-        talkbut report --format json --output report.json
-        talkbut report --no-ai  # Skip AI analysis
-    """
+    """(deprecated) ใช้ log แทน"""
     try:
         # Parse date
         target_date = _parse_date(date)

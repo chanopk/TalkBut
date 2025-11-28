@@ -4,13 +4,17 @@ git:
       name: "cimb-langgraph"
     - path: /Users/2202868/Documents/GitHub/TalkBut
       name: "TalkBut"
+    - path: /Users/2202868/android-deposit
+      name: "android-deposit"
 
 ai:
   provider: gemini
   api_key_env: GEMINI_API_KEY
-  model: gemini-2.0-flash
+  model: gemini-2.5-flash
   temperature: 0.3
-  max_tokens: 2000
+  top_p: 0.95
+  top_k: 40
+  max_output_tokens: 8192
 
 storage:
   log_dir: ./data/logs

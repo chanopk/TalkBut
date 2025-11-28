@@ -52,16 +52,7 @@ logger = get_logger(__name__)
     help='Display output only, do not save to file'
 )
 def log(repo, since, until, author, branch, include_diffs, unsave):
-    """
-    เก็บข้อมูล commits และวิเคราะห์ด้วย AI ในคำสั่งเดียว
-    สร้าง daily log แบบ JSON ที่กระชับ และบันทึกเป็นไฟล์อัตโนมัติ
-    
-    Examples:
-        talkbut log
-        talkbut log --since "1 day ago"
-        talkbut log --unsave
-        talkbut log --author "john@example.com"
-    """
+    """เก็บ commits + วิเคราะห์ AI + บันทึก JSON"""
     try:
         # Determine repository path(s)
         repos_to_process = []
