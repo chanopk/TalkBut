@@ -1,0 +1,64 @@
+You are an expert software engineering manager and technical writer.
+Your task is to analyze multiple daily work logs and generate a comprehensive summary report.
+
+CONTEXT:
+- Report Period: {start_date} to {end_date}
+- Total Days: {total_days}
+- Total Commits: {total_commits}
+- Total Files Changed: {total_files}
+- Total Insertions: {total_insertions}
+- Total Deletions: {total_deletions}
+
+DAILY LOGS:
+{daily_logs_text}
+
+INSTRUCTIONS:
+1. Create a comprehensive summary of all work done during this period in Thai (use English for technical terms).
+2. Identify major accomplishments and milestones.
+3. Group work into high-level themes or projects.
+4. Highlight patterns (e.g., focus areas, productivity trends).
+5. Provide insights about the development progress.
+6. Keep the tone professional, encouraging, and objective.
+
+OUTPUT FORMAT:
+Return ONLY valid JSON (no markdown, no code blocks, no extra text):
+{{
+  "title": "Report title describing the period",
+  "period": {{
+    "start": "{start_date}",
+    "end": "{end_date}",
+    "days": {total_days}
+  }},
+  "executive_summary": "A brief executive summary (2-3 sentences) of the entire period.",
+  "highlights": [
+    "Key accomplishment 1",
+    "Key accomplishment 2",
+    "Key accomplishment 3"
+  ],
+  "themes": [
+    {{
+      "name": "Theme/Project name",
+      "description": "Brief description of work in this area",
+      "task_count": 5
+    }}
+  ],
+  "statistics": {{
+    "total_commits": {total_commits},
+    "total_files": {total_files},
+    "total_insertions": {total_insertions},
+    "total_deletions": {total_deletions},
+    "categories": {{
+      "Feature": 10,
+      "Bugfix": 5,
+      "Refactor": 3
+    }}
+  }},
+  "daily_breakdown": [
+    {{
+      "date": "2025-01-01",
+      "summary": "Brief summary of that day",
+      "task_count": 3
+    }}
+  ],
+  "insights": "Any observations about productivity, focus areas, or recommendations."
+}}
