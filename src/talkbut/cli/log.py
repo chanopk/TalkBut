@@ -135,64 +135,77 @@ def log(repo, since, until, author, branch, include_diffs, unsave):
         
         click.echo(f"\n✅ Total: {len(commits)} commits from {len(repos_to_process)} repository(ies)")
         
-        # Analyze with AI
-        click.echo("🤖 Analyzing with AI...")
+        # Group commits by date
+        from collections import defaultdict
+        commits_by_date = defaultdict(list)
+        for commit in commits:
+            commit_date = commit.date.date()
+            commits_by_date[commit_date].append(commit)
+        
+        click.echo(f"📅 Commits span {len(commits_by_date)} day(s)")
+        
+        # Analyze and save each date separately
         analyzer = AIAnalyzer()
+        output_dir = Path("data/logs")
+        output_dir.mkdir(parents=True, exist_ok=True)
         
-        # Use the first commit's date as report date
-        report_date = commits[0].date.date()
-        report = analyzer.analyze_commits(commits, report_date)
+        all_daily_logs = []
         
-        # Build compact daily log
-        daily_log = {
-            "date": report_date.isoformat(),
-            "summary": report.ai_summary,
-            "stats": {
-                "commits": report.total_commits,
-                "files": report.files_changed,
-                "insertions": report.insertions,
-                "deletions": report.deletions
-            },
-            "categories": report.categories,
-            "tasks": report.tasks if hasattr(report, 'tasks') and report.tasks else []
-        }
-        
-        # Format JSON (always compact)
-        json_output = json.dumps(daily_log, ensure_ascii=False, separators=(',', ':'))
-        
-        # Output
-        if unsave:
-            # Display only, do not save
-            click.echo("\n📋 Daily Log:")
-            click.echo(json_output)
-        else:
-            # Save to file automatically
-            # Generate filename: daily_log_YYYY-MM-DD.json
-            filename = f"daily_log_{report_date.isoformat()}.json"
-            output_dir = Path("data/logs")
-            output_dir.mkdir(parents=True, exist_ok=True)
-            output_path = output_dir / filename
+        for report_date in sorted(commits_by_date.keys(), reverse=True):
+            date_commits = commits_by_date[report_date]
+            click.echo(f"\n🤖 Analyzing {report_date.isoformat()} ({len(date_commits)} commits)...")
             
-            # Remove old file if exists (no prompt)
-            if output_path.exists():
-                output_path.unlink()
-                click.echo(f"🗑️  Removed old file: {output_path}")
+            report = analyzer.analyze_commits(date_commits, report_date)
             
-            # Save new file
-            with open(output_path, 'w', encoding='utf-8') as f:
-                f.write(json_output)
-            click.echo(f"\n💾 Daily log saved to: {output_path}")
+            # Build compact daily log
+            daily_log = {
+                "date": report_date.isoformat(),
+                "summary": report.ai_summary,
+                "stats": {
+                    "commits": report.total_commits,
+                    "files": report.files_changed,
+                    "insertions": report.insertions,
+                    "deletions": report.deletions
+                },
+                "categories": report.categories,
+                "tasks": report.tasks if hasattr(report, 'tasks') and report.tasks else []
+            }
+            
+            all_daily_logs.append(daily_log)
+            
+            # Format JSON (always compact)
+            json_output = json.dumps(daily_log, ensure_ascii=False, separators=(',', ':'))
+            
+            # Output
+            if unsave:
+                # Display only, do not save
+                click.echo(f"\n📋 Daily Log ({report_date.isoformat()}):")
+                click.echo(json_output)
+            else:
+                # Save to file automatically
+                filename = f"daily_log_{report_date.isoformat()}.json"
+                output_path = output_dir / filename
+                
+                # Remove old file if exists (no prompt)
+                if output_path.exists():
+                    output_path.unlink()
+                    click.echo(f"   🗑️  Removed old file: {output_path}")
+                
+                # Save new file
+                with open(output_path, 'w', encoding='utf-8') as f:
+                    f.write(json_output)
+                click.echo(f"   💾 Saved: {output_path}")
         
         # Show summary
-        click.echo(f"\n✨ Summary:")
-        click.echo(f"   {report.ai_summary[:100]}...")
-        if report.tasks:
-            click.echo(f"\n📋 Tasks ({len(report.tasks)}):")
-            for task in report.tasks[:5]:
-                task_id = task.get('id', 'N/A')
-                task_title = task.get('title', 'Untitled')
-                task_category = task.get('category', 'Unknown')
-                click.echo(f"   • [{task_id}] {task_title} ({task_category})")
+        click.echo(f"\n✨ Summary ({len(all_daily_logs)} day(s) processed):")
+        for daily_log in all_daily_logs:
+            summary_preview = daily_log['summary'][:80] if daily_log['summary'] else 'No summary'
+            click.echo(f"   📅 {daily_log['date']}: {summary_preview}...")
+            if daily_log['tasks']:
+                for task in daily_log['tasks'][:3]:
+                    task_id = task.get('id', 'N/A')
+                    task_title = task.get('title', 'Untitled')
+                    click.echo(f"      • [{task_id}] {task_title}")
         
     except ValueError as e:
         click.echo(f"❌ Error: {e}", err=True)
