@@ -1,11 +1,14 @@
 git:
+  # Option 1: Explicitly list repositories
   repositories:
-    - path: /Users/2202868/cimb-langgraph
-      name: "cimb-langgraph"
     - path: /Users/2202868/Documents/GitHub/TalkBut
       name: "TalkBut"
-    - path: /Users/2202868/android-deposit
-      name: "android-deposit"
+  
+  # Option 2: Auto-scan paths for git repositories
+  scan_paths:
+    - /Users/2202868
+    - /Users/2202868/Documents/GitHub
+  scan_depth: 1
 
 ai:
   provider: gemini

@@ -1,11 +1,19 @@
 # TalkBut Configuration
 
 git:
+  # Option 1: Explicitly list repositories
   repositories:
-    # - path: /Users/2202868
-    #   name: "cimb-langgraph"
+    # - path: /Users/yourname/projects/my-project
+    #   name: "my-project"
     # - path: ./relativePath
     #   name: "Current Project"
+  
+  # Option 2: Auto-scan paths for git repositories
+  # All git repos under these paths will be discovered automatically
+  scan_paths:
+    # - /Users/yourname/Documents/GitHub
+    # - /Users/yourname/projects
+  scan_depth: 2  # How deep to search for repos (default: 2)
   
   default_branch: main
   author_filter: null  # Set to your email to filter commits: "user@example.com"

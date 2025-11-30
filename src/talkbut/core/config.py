@@ -1,7 +1,7 @@
 import os
 import yaml
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 
 class ConfigManager:
     _instance = None
@@ -47,6 +47,8 @@ class ConfigManager:
         self._config = {
             "git": {
                 "repositories": [],
+                "scan_paths": [],  # Paths to scan for git repos
+                "scan_depth": 2,   # Max depth for scanning
                 "default_branch": "main",
                 "author_filter": None,
             },
@@ -103,8 +105,47 @@ class ConfigManager:
         return value
 
     @property
-    def git_repos(self) -> list:
-        return self.get("git.repositories", [])
+    def git_repos(self) -> List[Dict[str, str]]:
+        """
+        Get all git repositories from both explicit list and scanned paths.
+        
+        Returns:
+            Combined list of repositories (deduplicated by path)
+        """
+        # Get explicitly defined repositories
+        explicit_repos = self.get("git.repositories", [])
+        
+        # Get scan paths configuration
+        scan_paths = self.get("git.scan_paths", [])
+        scan_depth = self.get("git.scan_depth", 2)
+        
+        if not scan_paths:
+            return explicit_repos
+        
+        # Scan for repositories
+        from talkbut.collectors.repo_scanner import RepoScanner
+        scanner = RepoScanner(max_depth=scan_depth)
+        scanned_repos = scanner.scan_multiple(scan_paths, scan_depth)
+        
+        # Merge and deduplicate (explicit repos take priority)
+        seen_paths = set()
+        merged_repos = []
+        
+        # Add explicit repos first (they have priority)
+        for repo in explicit_repos:
+            path = str(Path(repo.get('path', '')).expanduser().resolve())
+            if path not in seen_paths:
+                seen_paths.add(path)
+                merged_repos.append(repo)
+        
+        # Add scanned repos that aren't already in the list
+        for repo in scanned_repos:
+            path = str(Path(repo.get('path', '')).expanduser().resolve())
+            if path not in seen_paths:
+                seen_paths.add(path)
+                merged_repos.append(repo)
+        
+        return merged_repos
 
     @property
     def ai_api_key(self) -> Optional[str]:
