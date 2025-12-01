@@ -43,12 +43,12 @@ MAX_DAYS = 30  # Maximum days allowed for report
     help='Output format (default: markdown)'
 )
 @click.option(
-    '--output', '-o',
-    type=click.Path(),
-    default=None,
-    help='Save report to file (default: print to console)'
+    '--unsave',
+    is_flag=True,
+    default=False,
+    help='Display output only, do not save to file'
 )
-def report(days, start, end, format, output):
+def report(days, start, end, format, unsave):
     """สร้างรายงานสรุปจาก daily logs (ย้อนหลังได้สูงสุด 1 เดือน)"""
     try:
         # Parse dates
@@ -99,18 +99,29 @@ def report(days, start, end, format, output):
             content = _format_markdown(report_data)
         
         # Output
-        if output:
-            output_path = Path(output)
+        if unsave:
+            # Display only, do not save
+            click.echo("\n" + "=" * 60)
+            click.echo(content)
+            click.echo("=" * 60)
+        else:
+            # Auto-generate filename: report_{start}_{end}.{ext}
+            ext_map = {'markdown': 'md', 'json': 'json', 'text': 'txt'}
+            ext = ext_map.get(format, 'md')
+            filename = f"report_{start_date.isoformat()}_{end_date.isoformat()}.{ext}"
+            output_path = Path("data/reports") / filename
+            
             output_path.parent.mkdir(parents=True, exist_ok=True)
+            
+            # Remove old file if exists
+            if output_path.exists():
+                output_path.unlink()
+                click.echo(f"🗑️  Removed old file: {output_path}")
             
             with open(output_path, 'w', encoding='utf-8') as f:
                 f.write(content)
             
-            click.echo(f"✅ Report saved to: {output}")
-        else:
-            click.echo("\n" + "=" * 60)
-            click.echo(content)
-            click.echo("=" * 60)
+            click.echo(f"✅ Report saved to: {output_path}")
         
     except ValueError as e:
         click.echo(f"❌ Error: {e}", err=True)

@@ -13,6 +13,7 @@ class Commit:
     insertions: int = 0
     deletions: int = 0
     branch: str = ""
+    repo_name: str = ""  # Repository/project name
     tags: List[str] = field(default_factory=list)
     ticket_refs: List[str] = field(default_factory=list)
     file_diffs: dict = field(default_factory=dict)  # {filename: diff_text}

@@ -50,7 +50,7 @@ class ConfigManager:
                 "scan_paths": [],  # Paths to scan for git repos
                 "scan_depth": 2,   # Max depth for scanning
                 "default_branch": "main",
-                "author_filter": None,
+                "author": "",  # Filter commits by author (email or name)
             },
             "ai": {
                 "provider": "gemini",

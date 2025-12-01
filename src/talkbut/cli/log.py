@@ -33,7 +33,7 @@ logger = get_logger(__name__)
 @click.option(
     '--author', '-a',
     default=None,
-    help='Filter by author email or name'
+    help='Filter by author email or name (default: from config git.author)'
 )
 @click.option(
     '--branch', '-b',
@@ -54,12 +54,20 @@ logger = get_logger(__name__)
 def log(repo, since, until, author, branch, include_diffs, unsave):
     """เก็บ commits + วิเคราะห์ AI + บันทึก JSON"""
     try:
+        # Load config
+        config = ConfigManager()
+        
+        # Use author from config if not specified via CLI
+        if author is None:
+            config_author = config.get("git.author")
+            if config_author:
+                author = config_author
+        
         # Determine repository path(s)
         repos_to_process = []
         if repo is None:
-            config = ConfigManager()
             repos = config.git_repos
-            if repos and len(repos) > 0:
+            if repos:
                 # Use all configured repositories
                 repos_to_process = repos
                 click.echo(f"📝 Using {len(repos)} repositories from config:")
@@ -102,6 +110,9 @@ def log(repo, since, until, author, branch, include_diffs, unsave):
                 
                 if commits:
                     click.echo(f"   ✓ Found {len(commits)} commits")
+                    # Add repo_name to each commit
+                    for c in commits:
+                        c.repo_name = repo_name
                     all_commits.extend(commits)
                 else:
                     click.echo(f"   ⚠ No commits found")
@@ -194,9 +205,9 @@ def log(repo, since, until, author, branch, include_diffs, unsave):
             click.echo(f"   📅 {daily_log['date']}: {summary_preview}...")
             if daily_log['tasks']:
                 for task in daily_log['tasks'][:3]:
-                    task_id = task.get('id', 'N/A')
+                    project = task.get('project', 'Unknown')
                     task_title = task.get('title', 'Untitled')
-                    click.echo(f"      • [{task_id}] {task_title}")
+                    click.echo(f"      • [{project}] {task_title}")
         
     except ValueError as e:
         click.echo(f"❌ Error: {e}", err=True)

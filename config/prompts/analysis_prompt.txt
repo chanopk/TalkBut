@@ -10,29 +10,31 @@ COMMITS:
 {commits_text}
 
 INSTRUCTIONS:
-1. Summarize the work done today in Thai (use English for technical terms).
-2. Group the work into logical categories (e.g., Features, Bug Fixes, Refactoring, Documentation, Infrastructure).
+1. Write a CONCISE summary in Thai that covers ALL work done. Use bullet points if needed. Be brief but complete - don't miss any tasks.
+2. Group the work into logical categories (Feature, Bugfix, Refactor, Documentation, Infrastructure).
 3. Extract individual tasks from commit messages. Each task should:
-   - Have a unique ID (extract from commit message like [MVP], [TASK-123], or generate one)
+   - Have "project" field with the repository/project name (extract from [ProjectName] prefix in commit)
    - Have a clear, concise title describing what was done
-   - Be categorized (Feature, Bugfix, Refactor, Documentation, etc.)
+   - Be categorized (Feature, Bugfix, Refactor, Documentation, Infrastructure)
    - Include the commit hashes (short form) that belong to this task
-   - Status should be "completed" for all tasks in the log
+   - Status should be "completed" for all tasks
 4. Group related commits into the same task when they work toward the same goal.
-5. Keep the tone professional, encouraging, and objective.
+5. Keep everything brief and to the point.
 
 OUTPUT FORMAT:
 Return ONLY valid JSON (no markdown, no code blocks, no extra text):
 {{
-  "summary": "A brief paragraph summarizing the day's work.",
+  "summary": "Brief 1-2 sentence summary of key work done.",
   "categories": {{
     "Feature": 2,
     "Bugfix": 1,
-    "Refactor": 0
+    "Refactor": 0,
+    "Documentation": 0,
+    "Infrastructure": 0
   }},
   "tasks": [
     {{
-      "id": "TASK-001",
+      "project": "ProjectName",
       "title": "Clear, concise task description",
       "category": "Feature",
       "status": "completed",

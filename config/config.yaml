@@ -1,4 +1,8 @@
 git:
+  # Filter commits by author (email or name)
+  # Leave empty or remove to include all authors
+  author: "chanop.k@cimbthai.com"
+  
   # Option 1: Explicitly list repositories
   repositories:
     - path: /Users/2202868/Documents/GitHub/TalkBut

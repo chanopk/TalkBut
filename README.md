@@ -52,6 +52,9 @@ talkbut config init
 
 ```yaml
 git:
+  # กรอง commits เฉพาะ author ที่ต้องการ (email หรือชื่อ)
+  author: "your.email@example.com"
+  
   # ระบุ path ที่เก็บ git projects ของคุณ สามารถระบุได้หลาย path
   scan_paths:
     - /Users/yourname/Documents/GitHub
@@ -76,13 +79,16 @@ talkbut log
 # สร้าง log default : วันนี้
 talkbut log
 
-# สามารภกำหนด day week month ได้
+# สามารถกำหนด day week month ได้
 talkbut log --since "7day ago"
+
+# กรอง commits เฉพาะ author (override config)
+talkbut log --author "john@example.com"
 
 # แสดงผลอย่างเดียว ไม่บันทึก
 talkbut log --unsave
 
-# ไม่อ่าน diffs อ่านแค่  commits
+# ไม่อ่าน diffs อ่านแค่ commits
 talkbut log --no-diffs
 ```
 
@@ -134,6 +140,10 @@ talkbut config check
 
 ```yaml
 git:
+  # กรอง commits เฉพาะ author (email หรือชื่อ)
+  # เว้นว่างไว้ = เก็บ commits ของทุกคน
+  author: "your.email@example.com"
+  
   # วิธีที่ 1: ระบุ repositories ตรงๆ
   repositories:
     - path: /path/to/your/project
@@ -143,12 +153,6 @@ git:
   scan_paths:
     - /Users/yourname/Documents/GitHub
     - /Users/yourname/projects
-  scan_depth: 2  # ความลึกในการค้นหา (default: 2)
-
-ai:
-  provider: gemini
-  api_key_env: GEMINI_API_KEY
-  model: gemini-2.0-flash-exp
 ```
 
 ### Auto-scan Repositories
@@ -159,7 +163,7 @@ ai:
 git:
   scan_paths:
     - /Users/yourname/Documents/GitHub  # scan ทุก repos ใน GitHub folder
-  scan_depth: 2  # ค้นหาลึก 2 ระดับ
+  scan_depth: 2
 ```
 
 `scan_depth` คือความลึกของ folder ที่จะค้นหา:

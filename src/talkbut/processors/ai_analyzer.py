@@ -66,7 +66,8 @@ class AIAnalyzer:
             files_changed_set.update(c.files_changed)
             insertions += c.insertions
             deletions += c.deletions
-            commits_text += f"- [{c.date.strftime('%H:%M')}] {c.message} (Hash: {c.short_hash})\n"
+            repo_label = f"[{c.repo_name}] " if c.repo_name else ""
+            commits_text += f"- [{c.date.strftime('%H:%M')}] {repo_label}{c.message} (Hash: {c.short_hash})\n"
 
         # Prepare default/fallback report data
         report_data = {
