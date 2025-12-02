@@ -29,6 +29,8 @@ def cli():
        talkbut log --since "3 days ago"
        talkbut report --days 7
        talkbut report --start 2025-11-01 --end 2025-11-30
+       talkbut report --fast "1 month"    # ⚡ สรุปแบบเร็ว ยิง AI ครั้งเดียว
+       talkbut report --fast "YTD"        # 📅 สรุปทั้งปี แบ่งทีละเดือน
     """
     pass
 

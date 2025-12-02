@@ -57,9 +57,26 @@ talkbut log --since "1 week ago"
 
 #### `--since` และ `--until`
 รองรับหลายรูปแบบ:
-- **Relative**: `"1 day ago"`, `"2 weeks ago"`, `"yesterday"`
-- **Absolute**: `"2025-11-20"`, `"2025-11-20 14:30"`
+- **Relative**: `"1 day ago"`, `"7 days ago"`, `"2 weeks ago"`, `"yesterday"`
+- **Absolute (ISO format)**: `"2025-11-01"`, `"2025-11-25"`, `"2025-12-01"`
+- **With time**: `"2025-11-20 14:30"`, `"2025-11-25 09:00"`
 - **Git format**: `"@{2.days.ago}"`, `"@{yesterday}"`
+
+ตัวอย่าง:
+```bash
+# แบบ relative
+talkbut log --since "1 day ago"
+talkbut log --since "7 days ago"
+talkbut log --since "1 week ago"
+
+# แบบวันที่ (ISO format)
+talkbut log --since "2025-11-01"
+talkbut log --since "2025-11-25"
+
+# กำหนดทั้ง start และ end
+talkbut log --since "2025-11-01" --until "2025-11-30"
+talkbut log --since "2025-11-25" --until "2025-12-01"
+```
 
 #### `--author`
 กรองตาม author email หรือชื่อ:

@@ -1,10 +1,5 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
 ## [0.1.0] - 2025-12-02
 
 ### 🎉 MVP Release
@@ -15,7 +10,7 @@ TalkBut v0.1.0 เป็น MVP (Minimum Viable Product) แรกที่พ�
 
 #### Core Functionality
 - **Daily Work Log Generation**: สร้างรายงานสรุปงานประจำวันจาก Git commits อัตโนมัติ
-- **AI-Powered Analysis**: ใช้ Google Gemini AI วิเคราะห์และสรุปผลงานอย่างชintelligent
+- **AI-Powered Analysis**: ใช้ Google Gemini AI วิเคราะห์และสรุปผลงานอย่าง intelligent
 - **Auto Repository Scanner**: สแกนหา Git repositories อัตโนมัติจาก path ที่กำหนด
 
 #### CLI Commands
@@ -28,7 +23,7 @@ TalkBut v0.1.0 เป็น MVP (Minimum Viable Product) แรกที่พ�
   - `init`: สร้าง config เริ่มต้น
   - `show`: แสดง config ปัจจุบัน
   - `check`: ตรวจสอบความถูกต้องของ config
-- `talkbut report`: Export รายงาน (อยู่ระหว่างพัฒนา)
+- `talkbut report`: Export รายงานเป็น Markdown format
 
 #### Data Collection
 - **Git Integration**: ดึงข้อมูล commits, diffs, และ statistics จาก Git
@@ -38,7 +33,7 @@ TalkBut v0.1.0 เป็น MVP (Minimum Viable Product) แรกที่พ�
 
 #### Storage & Export
 - **JSON Storage**: บันทึกข้อมูลเป็น JSON ที่ `data/logs/`
-- **Multiple Formats**: รองรับ JSON, Markdown, Plain Text (Markdown และ Text อยู่ระหว่างปรับปรุง)
+- **Markdown Export**: Export รายงานเป็น Markdown format ด้วยคำสั่ง `talkbut report`
 - **Local Storage**: เก็บข้อมูลปลอดภัยที่เครื่องของคุณ
 
 #### Configuration

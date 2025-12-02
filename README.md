@@ -79,8 +79,18 @@ talkbut log
 # สร้าง log default : วันนี้
 talkbut log
 
-# สามารถกำหนด day week month ได้
-talkbut log --since "7day ago"
+# กำหนดช่วงเวลาแบบ relative
+talkbut log --since "1 day ago"
+talkbut log --since "7 days ago"
+talkbut log --since "1 week ago"
+talkbut log --since "yesterday"
+
+# กำหนดช่วงเวลาแบบวันที่ (ISO format)
+talkbut log --since "2025-11-01"
+talkbut log --since "2025-11-25"
+
+# กำหนดทั้ง start และ end date
+talkbut log --since "2025-11-01" --until "2025-11-30"
 
 # กรอง commits เฉพาะ author (override config)
 talkbut log --author "john@example.com"
