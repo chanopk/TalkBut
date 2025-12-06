@@ -1,0 +1,4 @@
+# file: /Users/2202868/Documents/GitHub/TalkBut/src/talkbut/models/report.py
+# hypothesis_version: 6.141.1
+
+['ai_summary', 'categories', 'commits', 'date', 'deletions', 'files_changed', 'insertions', 'tasks', 'total_commits']

@@ -1,0 +1,4 @@
+# file: /Users/2202868/Documents/GitHub/TalkBut/src/talkbut/scheduling/scheduler_manager.py
+# hypothesis_version: 6.141.1
+
+['--config', '-m', ':', 'cron', 'job_exists', 'log', 'remove_job', 'talkbut', 'task_exists', 'task_scheduler', 'unsupported']

@@ -7,6 +7,7 @@ from talkbut.cli.config import config
 from talkbut.cli.log import log
 from talkbut.cli.report import report
 from talkbut.cli.scan import scan
+from talkbut.cli.schedule import schedule
 
 logger = get_logger(__name__)
 
@@ -39,6 +40,7 @@ cli.add_command(log)
 cli.add_command(config)
 cli.add_command(report)
 cli.add_command(scan)
+cli.add_command(schedule)
 
 if __name__ == "__main__":
     cli()

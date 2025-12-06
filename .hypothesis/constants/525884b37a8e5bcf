@@ -1,0 +1,4 @@
+# file: /Users/2202868/Documents/GitHub/TalkBut/src/talkbut/collectors/parser.py
+# hypothesis_version: 6.141.1
+
+['([A-Z]+-\\d+|#\\d+)', '\\[([A-Z_]+)\\]', 'add:', 'body', 'bug:', 'bugfix', 'build:', 'chore', 'chore:', 'clean:', 'config:', 'doc:', 'docs:', 'documentation', 'feat:', 'feature', 'feature:', 'fix:', 'improve:', 'new:', 'optimize:', 'other', 'patch:', 'refactor', 'refactor:', 'resolve:', 'setup:', 'subject', 'tags', 'test:', 'testing', 'tests:', 'ticket_refs']

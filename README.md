@@ -124,6 +124,127 @@ talkbut config check
 
 📚 **[ดูคู่มือเพิ่มเติม →](docs/LOG_COMMAND.md)**
 
+### Automated Scheduling
+
+TalkBut รองรับการสร้าง daily log อัตโนมัติทุกวันตามเวลาที่กำหนด โดยใช้ cron (macOS/Linux) หรือ Task Scheduler (Windows)
+
+#### เปิดใช้งาน Automated Logging
+
+```bash
+# เปิดใช้งานและกำหนดเวลา (24-hour format)
+talkbut schedule enable --time "18:00"
+
+# ตรวจสอบสถานะ
+talkbut schedule status
+```
+
+#### จัดการ Schedule
+
+```bash
+# แก้ไขเวลา
+talkbut schedule update --time "20:00"
+
+# ปิดใช้งาน
+talkbut schedule disable
+
+# ดูสถานะปัจจุบัน
+talkbut schedule status
+```
+
+#### ตัวอย่าง Status Output
+
+```
+Schedule Status:
+  Status: Enabled
+  Schedule Time: 18:00 (daily)
+  Last Run: 2025-12-06 18:00:15
+  Next Run: 2025-12-07 18:00:00
+  Platform: cron (macOS)
+
+Recent Runs:
+  ✓ 2025-12-06 18:00:15 - Success
+  ✓ 2025-12-05 18:00:12 - Success
+```
+
+#### Platform-Specific Notes
+
+**macOS/Linux:**
+- ใช้ cron สำหรับ scheduling
+- ต้องการ permission ในการแก้ไข crontab
+- ตรวจสอบ cron jobs ด้วย: `crontab -l`
+
+**Windows:**
+- ใช้ Task Scheduler สำหรับ scheduling
+- อาจต้องการ administrator privileges
+- ตรวจสอบ tasks ด้วย: `schtasks /query /tn TalkButDailyLog`
+
+### Batch Processing
+
+สร้าง daily logs สำหรับหลายวันพร้อมกัน - เหมาะสำหรับการสร้าง logs ย้อนหลังหรือรันสัปดาห์ละครั้ง
+
+#### Basic Batch Processing
+
+```bash
+# สร้าง logs สำหรับ 7 วันที่ผ่านมา
+talkbut log --since "7 days ago"
+
+# สร้าง logs สำหรับช่วงเวลาที่กำหนด
+talkbut log --since "2025-11-01" --until "2025-11-30"
+
+# สร้าง logs สำหรับสัปดาห์ที่แล้ว
+talkbut log --since "1 week ago"
+```
+
+#### Batch Options
+
+```bash
+# แสดง progress bar และสรุปผล
+talkbut log --since "7 days ago" --batch
+
+# บังคับสร้างใหม่ทั้งหมด (ข้าม existing logs)
+talkbut log --since "7 days ago" --force
+
+# รวมทั้ง batch mode และ force
+talkbut log --since "7 days ago" --batch --force
+```
+
+#### ตัวอย่าง Batch Output
+
+```
+Processing 7 dates...
+
+[1/7] 2025-11-25: ✓ Processed (5 commits)
+[2/7] 2025-11-26: ⊘ Skipped (log exists)
+[3/7] 2025-11-27: ✓ Processed (3 commits)
+[4/7] 2025-11-28: ⊘ Skipped (no commits)
+[5/7] 2025-11-29: ✓ Processed (8 commits)
+[6/7] 2025-11-30: ✓ Processed (2 commits)
+[7/7] 2025-12-01: ✓ Processed (6 commits)
+
+Summary:
+  Total: 7 dates
+  Processed: 5 dates
+  Skipped: 2 dates (1 existing, 1 no commits)
+  Failed: 0 dates
+  Duration: 45.2s
+```
+
+#### Smart Skipping
+
+Batch processing จะข้ามวันที่มี log อยู่แล้วโดยอัตโนมัติ เพื่อ:
+- ประหยัดค่า API calls
+- ลดเวลาในการประมวลผล
+- หลีกเลี่ยงการสร้าง logs ซ้ำ
+
+ใช้ `--force` เพื่อบังคับสร้างใหม่ทั้งหมด
+
+#### Error Handling
+
+หาก batch processing พบ error ในวันใดวันหนึ่ง:
+- ระบบจะดำเนินการต่อกับวันอื่นๆ
+- Error จะถูกบันทึกและแสดงในสรุปผล
+- สามารถ retry เฉพาะวันที่ล้มเหลวได้
+
 ## 📋 ตัวอย่าง Output
 
 ```json
@@ -163,6 +284,12 @@ git:
   scan_paths:
     - /Users/yourname/Documents/GitHub
     - /Users/yourname/projects
+
+schedule:
+  enabled: false  # เปิด/ปิด automated logging
+  time: "18:00"  # เวลาที่จะรัน (24-hour format)
+  status_file: ./data/schedule_status.json
+  error_log: ./data/schedule_errors.log
 ```
 
 ### Auto-scan Repositories

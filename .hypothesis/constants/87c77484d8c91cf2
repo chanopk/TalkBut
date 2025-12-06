@@ -1,0 +1,4 @@
+# file: /Users/2202868/Documents/GitHub/TalkBut/src/talkbut/processors/batch_processor.py
+# hypothesis_version: 6.141.1
+
+[0.0, ',', '.', './data/logs', ':', 'Current Directory', 'Unknown error', 'categories', 'commits', 'date', 'deletions', 'files', 'git.author', 'insertions', 'name', 'path', 'stats', 'storage.log_dir', 'summary', 'tasks', 'utf-8', 'w']

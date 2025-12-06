@@ -1,0 +1,4 @@
+# file: /Users/2202868/Documents/GitHub/TalkBut/src/talkbut/core/config.py
+# hypothesis_version: 6.141.1
+
+[0.3, 0.95, 8192, '"', '#', "'", '.', './data/logs', '.env', '18:00', '=', 'AIza', 'GEMINI_API_KEY', 'TALKBUT_CONFIG_PATH', 'ai', 'ai.api_key_env', 'api_key_env', 'asc', 'author', 'category', 'config/config.yaml', 'default_branch', 'default_format', 'enabled', 'error_log', 'gemini', 'gemini-2.0-flash-exp', 'git', 'git.repositories', 'git.scan_depth', 'git.scan_paths', 'group_by', 'include_file_list', 'include_stats', 'log_dir', 'main', 'markdown', 'max_output_tokens', 'model', 'path', 'provider', 'r', 'report', 'repositories', 'retention_days', 'scan_depth', 'scan_paths', 'schedule', 'schedule.enabled', 'schedule.error_log', 'schedule.status_file', 'schedule.time', 'sk-', 'sort_order', 'status_file', 'storage', 'temperature', 'time', 'top_k', 'top_p', 'utf-8', 'w']

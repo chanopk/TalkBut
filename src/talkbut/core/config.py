@@ -71,6 +71,12 @@ class ConfigManager:
             "storage": {
                 "log_dir": "./data/logs",
                 "retention_days": 90,
+            },
+            "schedule": {
+                "enabled": False,
+                "time": "18:00",  # HH:MM format (24-hour)
+                "status_file": "./data/schedule_status.json",
+                "error_log": "./data/schedule_errors.log",
             }
         }
 
@@ -168,3 +174,59 @@ class ConfigManager:
         
         # Otherwise, treat it as an environment variable name
         return os.getenv(api_key_value)
+
+    def get_schedule_config(self) -> Dict[str, Any]:
+        """
+        Get schedule configuration.
+        
+        Returns:
+            Dictionary with schedule settings (enabled, time, status_file, error_log)
+            
+        Requirements: 1.3, 2.1
+        """
+        return {
+            "enabled": self.get("schedule.enabled", False),
+            "time": self.get("schedule.time", "18:00"),
+            "status_file": self.get("schedule.status_file", "./data/schedule_status.json"),
+            "error_log": self.get("schedule.error_log", "./data/schedule_errors.log"),
+        }
+
+    def set_schedule_config(self, **kwargs) -> None:
+        """
+        Set schedule configuration values.
+        
+        Args:
+            **kwargs: Schedule configuration keys to update
+                     (enabled, time, status_file, error_log)
+                     
+        Requirements: 1.3, 2.1
+        """
+        if "schedule" not in self._config:
+            self._config["schedule"] = {}
+        
+        for key, value in kwargs.items():
+            if key in ["enabled", "time", "status_file", "error_log"]:
+                self._config["schedule"][key] = value
+
+    def save_schedule_config(self, config_path: Optional[str] = None) -> None:
+        """
+        Save current configuration to file.
+        
+        Args:
+            config_path: Path to config file (default: config/config.yaml)
+            
+        Requirements: 1.3
+        """
+        if config_path is None:
+            config_path = os.getenv("TALKBUT_CONFIG_PATH", "config/config.yaml")
+        
+        # Ensure directory exists
+        config_dir = os.path.dirname(config_path)
+        if config_dir:
+            os.makedirs(config_dir, exist_ok=True)
+        
+        try:
+            with open(config_path, "w", encoding="utf-8") as f:
+                yaml.dump(self._config, f, default_flow_style=False, sort_keys=False)
+        except Exception as e:
+            raise IOError(f"Failed to save config file: {e}")
