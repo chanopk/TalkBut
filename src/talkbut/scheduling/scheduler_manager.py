@@ -56,7 +56,7 @@ class SchedulerManager:
         if not self._validate_time_format(time):
             return False
         
-        # Build command to execute
+        # Build command to execute (includes config_path in the command string)
         command = self._build_command(config_path)
         
         # Create scheduled job
@@ -74,12 +74,13 @@ class SchedulerManager:
         
         return self.scheduler.remove_job() if hasattr(self.scheduler, 'remove_job') else self.scheduler.remove_task()
     
-    def update(self, time: str) -> bool:
+    def update(self, time: str, config_path: Optional[str] = None) -> bool:
         """
         Update the schedule time.
         
         Args:
             time: New time in HH:MM format (24-hour)
+            config_path: Optional path to config file
             
         Returns:
             True if successful, False otherwise
@@ -91,9 +92,8 @@ class SchedulerManager:
         if not self._validate_time_format(time):
             return False
         
-        # Get current command (we need to preserve it)
-        # For now, rebuild the command with default config
-        command = self._build_command()
+        # Build command with config path (includes config_path in the command string)
+        command = self._build_command(config_path)
         
         # Update is essentially remove + create
         return self.scheduler.create_job(time, command)

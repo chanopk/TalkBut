@@ -235,9 +235,9 @@ class AutomatedRunner:
                     last_error = error
                     break
                 
-                # Skip if no commits
+                # Skip if no commits - don't create log file
                 if not commits:
-                    print(f"No commits found for {today}")
+                    print(f"No commits found for {today} - skipping log creation")
                     self.status_manager.record_run(success=True)
                     return 0
                 

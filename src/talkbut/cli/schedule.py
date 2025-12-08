@@ -71,7 +71,10 @@ def enable(time):
     # Enable scheduling
     click.echo(f"Enabling automated daily logging at {time}...")
     
-    success = scheduler_manager.enable(time)
+    # Get config file path to pass to automated runner
+    config_path = config.config_path if hasattr(config, 'config_path') else None
+    
+    success = scheduler_manager.enable(time, config_path=config_path)
     
     if success:
         # Update config
@@ -204,7 +207,10 @@ def update(time):
     # Update schedule
     click.echo(f"Updating schedule to {time}...")
     
-    success = scheduler_manager.update(time)
+    # Get config file path to pass to automated runner
+    config_path = config.config_path if hasattr(config, 'config_path') else None
+    
+    success = scheduler_manager.update(time, config_path=config_path)
     
     if success:
         # Update config

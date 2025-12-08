@@ -6,6 +6,7 @@ from typing import Dict, Any, Optional, List
 class ConfigManager:
     _instance = None
     _config: Dict[str, Any] = {}
+    _config_path: Optional[str] = None
 
     def __new__(cls):
         if cls._instance is None:
@@ -13,6 +14,11 @@ class ConfigManager:
             cls._instance._load_env_file()
             cls._instance._load_config()
         return cls._instance
+    
+    @property
+    def config_path(self) -> Optional[str]:
+        """Get the path to the config file."""
+        return self._config_path
 
     def _load_env_file(self) -> None:
         """Load environment variables from .env file."""
@@ -84,6 +90,9 @@ class ConfigManager:
         config_path = os.getenv("TALKBUT_CONFIG_PATH", "config/config.yaml")
         if os.path.exists(config_path):
             try:
+                # Store the config path
+                self._config_path = os.path.abspath(config_path)
+                
                 with open(config_path, "r", encoding="utf-8") as f:
                     file_config = yaml.safe_load(f)
                     if file_config:

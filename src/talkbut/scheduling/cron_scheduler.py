@@ -20,7 +20,7 @@ class CronScheduler:
         
         Args:
             time: Time in HH:MM format (24-hour)
-            command: Command to execute
+            command: Command to execute (should include config path if needed)
             
         Returns:
             True if successful, False otherwise
