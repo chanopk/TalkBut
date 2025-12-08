@@ -1,5 +1,21 @@
 # Changelog
 
+
+## [0.2.0] - 2025-12-08
+
+### ✨ Features
+- Automated release process with version management
+- Property-based testing for core functionality
+- Comprehensive test suite with unit and property tests
+
+### 🔧 Improvements
+- Enhanced error handling and logging
+- Improved code organization and documentation
+
+### 📚 Documentation
+- Added release process documentation
+- Updated README with release instructions
+
 ## [0.1.0] - 2025-12-02
 
 ### 🎉 MVP Release
