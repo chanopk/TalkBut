@@ -324,6 +324,84 @@ ruff check src/ tests/
 mypy src/
 ```
 
+### Release Process
+
+TalkBut uses a simple AI-assisted release process:
+
+#### Steps to Release
+
+1. **Prepare for release**
+   ```bash
+   # Make sure all changes are committed
+   git status
+   ```
+
+2. **Ask AI to help with release**
+   
+   Simply ask: *"Help me release version X.Y.Z"*
+   
+   The AI will:
+   - Analyze all commits since the last release
+   - Generate a comprehensive changelog entry
+   - Update version numbers in:
+     - `package.json`
+     - `setup.py`
+     - `pyproject.toml`
+   - Update `CHANGELOG.md` with the new entry
+   - Create a git commit with message "Release vX.Y.Z"
+   - Create an annotated git tag `vX.Y.Z`
+
+3. **Review and push**
+   ```bash
+   # Review the changes
+   git show HEAD
+   
+   # Push to remote
+   git push origin main --tags
+   ```
+
+4. **Create GitHub Release (optional)**
+   - Go to: https://github.com/YOUR_USERNAME/TalkBut/releases/new
+   - Select the tag you just created
+   - Copy the changelog entry as release notes
+   - Publish release
+
+#### Example Conversation
+
+```
+You: "Help me release version 0.3.0"
+
+AI: "I'll help you release version 0.3.0. Let me analyze the commits 
+     since v0.2.0..."
+     
+     [AI analyzes commits and generates changelog]
+     
+     "I've created the release with the following changes:
+     - Updated version to 0.3.0 in all files
+     - Added changelog entry with 5 new features and 3 bug fixes
+     - Created commit and tag v0.3.0
+     
+     You can now push with: git push origin main --tags"
+```
+
+#### Manual Release (if needed)
+
+If you prefer to do it manually:
+
+```bash
+# 1. Update version in package.json, setup.py, pyproject.toml
+# 2. Update CHANGELOG.md
+# 3. Commit changes
+git add package.json setup.py pyproject.toml CHANGELOG.md
+git commit -m "Release vX.Y.Z"
+
+# 4. Create tag
+git tag -a vX.Y.Z -m "Release version X.Y.Z"
+
+# 5. Push
+git push origin main --tags
+```
+
 ## 🛠️ Tech Stack
 
 Python 3.9+ • Click • GitPython • Google Gemini API
