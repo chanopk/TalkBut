@@ -185,29 +185,8 @@ class BatchProcessor:
                 except Exception as e:
                     logger.warning(f"Failed to collect from {repo_name} for {process_date}: {e}")
             
-            # If no commits found, still create an empty log
+            # If no commits found, don't create log file but mark as successful
             if not all_commits:
-                # Create empty log
-                daily_log = {
-                    "date": process_date.isoformat(),
-                    "summary": "No commits found for this date.",
-                    "stats": {
-                        "commits": 0,
-                        "files": 0,
-                        "insertions": 0,
-                        "deletions": 0
-                    },
-                    "categories": [],
-                    "tasks": []
-                }
-                
-                # Save to file
-                filename = f"daily_log_{process_date.isoformat()}.json"
-                output_path = self.log_dir / filename
-                
-                with open(output_path, 'w', encoding='utf-8') as f:
-                    json.dump(daily_log, f, ensure_ascii=False, separators=(',', ':'))
-                
                 return ProcessResult(
                     date=process_date,
                     success=True,
