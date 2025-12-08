@@ -1,4 +1,0 @@
-# file: /Users/2202868/Documents/GitHub/TalkBut/src/talkbut/models/commit.py
-# hypothesis_version: 6.141.1
-
-['author', 'branch', 'date', 'deletions', 'email', 'file_diffs', 'files_changed', 'hash', 'insertions', 'message', 'tags', 'ticket_refs']

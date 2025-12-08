@@ -1,4 +1,0 @@
-# file: /Users/2202868/Documents/GitHub/TalkBut/src/talkbut/collectors/git_collector.py
-# hypothesis_version: 6.141.1
-
-['HEAD', 'author', 'date', 'deletions', 'format', 'ignore', 'insertions', 'iso', 'no_merges', 'numstat', 'since', 'stat', 'until', 'utf-8']

@@ -1,4 +1,0 @@
-# file: /Users/2202868/Documents/GitHub/TalkBut/src/talkbut/processors/ai_analyzer.py
-# hypothesis_version: 6.141.1
-
-[0.3, 0.95, 8192, '```', '```json', 'ai.max_output_tokens', 'ai.model', 'ai.temperature', 'ai.top_k', 'ai.top_p', 'ai_summary', 'categories', 'commits', 'date', 'deletions', 'files_changed', 'gemini-1.5-flash', 'insertions', 'max_output_tokens', 'r', 'summary', 'tasks', 'temperature', 'top_k', 'top_p', 'total_commits', 'utf-8']

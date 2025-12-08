@@ -1,4 +1,0 @@
-# file: /Users/2202868/Documents/GitHub/TalkBut/src/talkbut/scheduling/platform_detector.py
-# hypothesis_version: 6.141.1
-
-['Darwin', 'Linux', 'Windows', 'cron', 'task_scheduler', 'unsupported']
