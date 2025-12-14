@@ -37,3 +37,9 @@ report:
 storage:
   log_dir: ./data/logs
   retention_days: 90
+
+schedule:
+  enabled: false  # Whether automated daily logging is enabled
+  time: "18:00"  # HH:MM format (24-hour), time to run automated logging each day
+  status_file: ./data/schedule_status.json  # File to track schedule status and run history
+  error_log: ./data/schedule_errors.log  # File to log errors from automated runs

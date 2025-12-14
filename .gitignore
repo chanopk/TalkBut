@@ -40,6 +40,10 @@ venv.bak/
 *.swp
 *.swo
 
+# Testing
+.hypothesis/
+.pytest_cache/
+
 # Project specific
 data/
 *.log

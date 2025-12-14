@@ -1,5 +1,71 @@
 # Changelog
 
+## [0.2.0] - 2025-12-08
+
+### ✨ New Features
+
+#### ⏰ Automated Scheduling (`talkbut schedule`)
+- **Daily Auto-logging**: ตั้งเวลาให้สร้าง daily log อัตโนมัติทุกวัน
+- **Cross-platform Support**: รองรับ cron (macOS/Linux) และ Task Scheduler (Windows)
+- **Schedule Management**: 
+  - `talkbut schedule enable --time 18:00` - เปิดใช้งาน
+  - `talkbut schedule status` - ตรวจสอบสถานะ
+  - `talkbut schedule disable` - ปิดใช้งาน
+- **Status Tracking**: ติดตามการรันล่าสุด, รันถัดไป, และ error history
+
+#### ⚡ Fast Mode (`--fast`)
+- **Direct Commit Analysis**: ดึง commits โดยตรงและวิเคราะห์ด้วย AI ในครั้งเดียว
+- **Long Period Support**: สร้างรายงานช่วงยาวได้โดยไม่ต้องพึ่ง daily logs
+- **Usage Examples**:
+  - `talkbut report --fast "1 month"` - รายงาน 1 เดือนย้อนหลัง
+  - `talkbut report --fast "3 months"` - รายงาน 3 เดือนย้อนหลัง
+- **Cost Efficient**: ประหยัด API calls โดยยิง AI ครั้งเดียวแทนหลายครั้ง
+
+#### 📅 Year-to-Date Mode (`--fast "YTD"`)
+- **Annual Overview**: สรุปผลงานตั้งแต่ต้นปีจนถึงปัจจุบัน
+- **Monthly Breakdown**: แบ่งวิเคราะห์ทีละเดือนเพื่อหลีกเลี่ยง timeout
+- **Comprehensive Report**: รวมสถิติรวม, highlights รายเดือน, และ themes หลัก
+- **Smart Processing**: จัดการข้อมูลขนาดใหญ่อย่างมีประสิทธิภาพ
+
+### 🔧 Improvements
+
+#### 🏗️ Architecture Enhancement
+- **Modular Design**: ปรับโครงสร้างเป็น modules แยกหน้าที่ชัดเจน
+- **Scheduling System**: เพิ่ม `src/talkbut/scheduling/` สำหรับ automation
+- **Better Error Handling**: ปรับปรุงการจัดการ errors และ logging
+
+#### 🧪 Testing Framework
+- **Property-Based Testing**: เพิ่ม comprehensive test suite ด้วย Hypothesis
+- **12 Test Modules**: ครอบคลุมทุกฟีเจอร์หลัก (scheduling, batch processing, validation)
+- **Quality Assurance**: ป้องกัน regressions และเพิ่มความมั่นใจในโค้ด
+
+#### 🛠️ Developer Tools
+- **Poetry Support**: รองรับ Poetry package manager
+- **Code Quality**: Black, Ruff, MyPy, pytest-cov
+- **Better Documentation**: เพิ่ม docstrings และ inline comments
+
+### 🚀 Usage Examples
+
+```bash
+# ตั้งเวลาสร้าง log อัตโนมัติ
+talkbut schedule enable --time 18:00
+
+# สร้างรายงานแบบเร็ว (ประหยัด API)
+talkbut report --fast "1 month"
+
+# รายงานสรุปทั้งปี
+talkbut report --fast "YTD"
+
+# ตรวจสอบสถานะ schedule
+talkbut schedule status
+```
+
+---
+
+**Breaking Changes**: ไม่มี - backward compatible กับ v0.1.0
+
+**Full Changelog**: https://github.com/chanopk/TalkBut/compare/v0.1.0...v0.2.0
+
 ## [0.1.0] - 2025-12-02
 
 ### 🎉 MVP Release

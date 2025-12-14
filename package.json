@@ -1,6 +1,6 @@
 {
   "name": "talkbut",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "TalkBut - Automated daily work logger and reporter for developers",
   "scripts": {
     "test": "echo \"No Node.js tests yet\" && exit 0"

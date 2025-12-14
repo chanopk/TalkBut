@@ -8,6 +8,13 @@ from pathlib import Path
 from talkbut.collectors.git_collector import GitCollector
 from talkbut.collectors.parser import DataParser
 from talkbut.processors.ai_analyzer import AIAnalyzer
+from talkbut.processors.batch_processor import BatchProcessor
+from talkbut.processors.batch_display import (
+    display_batch_start,
+    create_progress_callback,
+    display_batch_summary
+)
+from talkbut.processors.batch_utils import expand_date_range
 from talkbut.core.config import ConfigManager
 from talkbut.utils.logger import get_logger
 
@@ -51,7 +58,19 @@ logger = get_logger(__name__)
     default=False,
     help='Display output only, do not save to file'
 )
-def log(repo, since, until, author, branch, include_diffs, unsave):
+@click.option(
+    '--force', '-f',
+    is_flag=True,
+    default=False,
+    help='Force regeneration of existing logs (batch mode)'
+)
+@click.option(
+    '--batch',
+    is_flag=True,
+    default=False,
+    help='Enable batch mode with progress display'
+)
+def log(repo, since, until, author, branch, include_diffs, unsave, force, batch):
     """เก็บ commits + วิเคราะห์ AI + บันทึก JSON"""
     try:
         # Load config
@@ -62,6 +81,53 @@ def log(repo, since, until, author, branch, include_diffs, unsave):
             config_author = config.get("git.author")
             if config_author:
                 author = config_author
+        
+        # Detect if date range spans multiple days
+        try:
+            dates = expand_date_range(since, until)
+            is_multi_day = len(dates) > 1
+        except ValueError as e:
+            click.echo(f"❌ Invalid date range: {e}", err=True)
+            raise click.Abort()
+        
+        # Use batch processing if:
+        # 1. Explicitly requested with --batch flag, OR
+        # 2. Date range spans multiple days
+        use_batch_mode = batch or is_multi_day
+        
+        # Batch mode is incompatible with some options
+        if use_batch_mode and (repo or branch or include_diffs or unsave):
+            if repo or branch or include_diffs:
+                click.echo("⚠️  Warning: --repo, --branch, and --include-diffs are ignored in batch mode", err=True)
+            if unsave:
+                click.echo("❌ Error: --unsave is not supported in batch mode", err=True)
+                raise click.Abort()
+        
+        # Use BatchProcessor for multi-day ranges
+        if use_batch_mode:
+            batch_processor = BatchProcessor(config)
+            
+            # Display batch start
+            display_batch_start(len(dates), since, until or "today")
+            
+            # Process with progress callback
+            progress_callback = create_progress_callback()
+            result = batch_processor.process_date_range(
+                since=since,
+                until=until,
+                force=force,
+                author=author,
+                progress_callback=progress_callback
+            )
+            
+            # Display summary
+            display_batch_summary(result)
+            
+            # Exit with error code if any failures
+            if result.failed:
+                raise click.Abort()
+            
+            return
         
         # Determine repository path(s)
         repos_to_process = []

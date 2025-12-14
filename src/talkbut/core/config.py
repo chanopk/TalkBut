@@ -6,6 +6,7 @@ from typing import Dict, Any, Optional, List
 class ConfigManager:
     _instance = None
     _config: Dict[str, Any] = {}
+    _config_path: Optional[str] = None
 
     def __new__(cls):
         if cls._instance is None:
@@ -13,6 +14,11 @@ class ConfigManager:
             cls._instance._load_env_file()
             cls._instance._load_config()
         return cls._instance
+    
+    @property
+    def config_path(self) -> Optional[str]:
+        """Get the path to the config file."""
+        return self._config_path
 
     def _load_env_file(self) -> None:
         """Load environment variables from .env file."""
@@ -71,6 +77,12 @@ class ConfigManager:
             "storage": {
                 "log_dir": "./data/logs",
                 "retention_days": 90,
+            },
+            "schedule": {
+                "enabled": False,
+                "time": "18:00",  # HH:MM format (24-hour)
+                "status_file": "./data/schedule_status.json",
+                "error_log": "./data/schedule_errors.log",
             }
         }
 
@@ -78,6 +90,9 @@ class ConfigManager:
         config_path = os.getenv("TALKBUT_CONFIG_PATH", "config/config.yaml")
         if os.path.exists(config_path):
             try:
+                # Store the config path
+                self._config_path = os.path.abspath(config_path)
+                
                 with open(config_path, "r", encoding="utf-8") as f:
                     file_config = yaml.safe_load(f)
                     if file_config:
@@ -168,3 +183,59 @@ class ConfigManager:
         
         # Otherwise, treat it as an environment variable name
         return os.getenv(api_key_value)
+
+    def get_schedule_config(self) -> Dict[str, Any]:
+        """
+        Get schedule configuration.
+        
+        Returns:
+            Dictionary with schedule settings (enabled, time, status_file, error_log)
+            
+        Requirements: 1.3, 2.1
+        """
+        return {
+            "enabled": self.get("schedule.enabled", False),
+            "time": self.get("schedule.time", "18:00"),
+            "status_file": self.get("schedule.status_file", "./data/schedule_status.json"),
+            "error_log": self.get("schedule.error_log", "./data/schedule_errors.log"),
+        }
+
+    def set_schedule_config(self, **kwargs) -> None:
+        """
+        Set schedule configuration values.
+        
+        Args:
+            **kwargs: Schedule configuration keys to update
+                     (enabled, time, status_file, error_log)
+                     
+        Requirements: 1.3, 2.1
+        """
+        if "schedule" not in self._config:
+            self._config["schedule"] = {}
+        
+        for key, value in kwargs.items():
+            if key in ["enabled", "time", "status_file", "error_log"]:
+                self._config["schedule"][key] = value
+
+    def save_schedule_config(self, config_path: Optional[str] = None) -> None:
+        """
+        Save current configuration to file.
+        
+        Args:
+            config_path: Path to config file (default: config/config.yaml)
+            
+        Requirements: 1.3
+        """
+        if config_path is None:
+            config_path = os.getenv("TALKBUT_CONFIG_PATH", "config/config.yaml")
+        
+        # Ensure directory exists
+        config_dir = os.path.dirname(config_path)
+        if config_dir:
+            os.makedirs(config_dir, exist_ok=True)
+        
+        try:
+            with open(config_path, "w", encoding="utf-8") as f:
+                yaml.dump(self._config, f, default_flow_style=False, sort_keys=False)
+        except Exception as e:
+            raise IOError(f"Failed to save config file: {e}")
